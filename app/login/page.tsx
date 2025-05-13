@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { loginWithEmail } from '@/app/actions';
+import { loginWithEmail } from '@/app/actions/auth/login';
 import { signIn } from 'next-auth/react';
 
 import { Button } from '@/components/ui/button';

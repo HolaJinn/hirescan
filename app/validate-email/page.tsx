@@ -2,7 +2,7 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 import { useState } from 'react';
-import { sendVerificationEmail } from '@/app/actions'; // Server action
+import { sendVerificationEmail } from '@/app/actions/auth/sendVerificationEmail'; // Server action
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

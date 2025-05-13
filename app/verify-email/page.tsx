@@ -1,7 +1,7 @@
 import { validateToken } from '@/app/utils/tokens';
 
 export default async function VerifyEmailPage({ searchParams }: { searchParams: { token?: string } }) {
-    const token = searchParams.token;
+    const token = await searchParams.token;
 
     if (!token) {
         return <p className="text-center mt-20 text-red-600">Invalid or missing token.</p>;

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { redirect, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signupWithEmail } from '@/app/actions';
+import { signupWithEmail } from '@/app/actions/auth/signup';
 import { signIn } from 'next-auth/react';
 
 import { Button } from '@/components/ui/button';

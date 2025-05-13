@@ -1,12 +1,15 @@
-import { auth } from '@/app/utils/auth'
+import { requireUser } from '@/app/utils/hooks'
 import { redirect } from 'next/navigation';
 
 export default async function DashboardPage() {
-    const session = await auth();
+    const session = await requireUser();
 
     if (!session?.user) {
         // Redirect to login if not authenticated
         return redirect('/api/auth/login');
+    }
+    if (!session?.user.verified) {
+        return redirect('/validate-email')
     }
 
     return (
