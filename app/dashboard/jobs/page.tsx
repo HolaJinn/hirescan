@@ -16,6 +16,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { prisma } from "@/app/utils/prisma"
+import { UploadResumesForm } from "@/app/components/UploadResumesForm"
 
 export default async function JobsPage() {
     const jobs = await prisma.jobDescription.findMany({
@@ -40,43 +41,65 @@ export default async function JobsPage() {
             {/* Job cards list */}
             <div className="space-y-4">
                 {jobs.map((job) => (
-                    <Dialog key={job.id}>
-                        <DialogTrigger asChild>
-                            <Card className="cursor-pointer hover:shadow-md transition-shadow duration-200">
-                                <CardHeader>
-                                    <CardTitle>{job.title}</CardTitle>
-                                    <CardDescription className="line-clamp-2">
-                                        {job.description}
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent className="flex gap-2">
-                                    <Link href={`/dashboard/jobs/${job.id}/edit`}>
-                                        <Button variant="outline">Edit</Button>
-                                    </Link>
-                                    <form action={`/dashboard/jobs/${job.id}/delete`} method="POST">
-                                        <Button variant="destructive" type="submit">
-                                            Delete
-                                        </Button>
-                                    </form>
-                                </CardContent>
-                            </Card>
-                        </DialogTrigger>
+                    <Card
+                        key={job.id}
+                        className="hover:shadow-md transition-shadow duration-200"
+                    >
+                        <CardHeader>
+                            {/* Wrap only title + description in DialogTrigger */}
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <div className="cursor-pointer">
+                                        <CardTitle>{job.title}</CardTitle>
+                                        <CardDescription className="line-clamp-2">
+                                            {job.description}
+                                        </CardDescription>
+                                    </div>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-y-auto">
+                                    <DialogHeader>
+                                        <DialogTitle className="text-xl">{job.title}</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-4">
+                                        <label className="text-sm font-medium text-muted-foreground">
+                                            Full Description
+                                        </label>
+                                        <Textarea
+                                            readOnly
+                                            value={job.description}
+                                            className="resize-none h-60 text-base"
+                                        />
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
+                        </CardHeader>
 
-                        {/* Modal content */}
-                        <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-y-auto">
-                            <DialogHeader>
-                                <DialogTitle className="text-xl">{job.title}</DialogTitle>
-                            </DialogHeader>
-                            <div className="space-y-4">
-                                <label className="text-sm font-medium text-muted-foreground">Full Description</label>
-                                <Textarea
-                                    readOnly
-                                    value={job.description}
-                                    className="resize-none h-60 text-base"
-                                />
-                            </div>
-                        </DialogContent>
-                    </Dialog>
+                        <CardContent className="flex gap-2">
+                            <Link href={`/dashboard/jobs/${job.id}/edit`}>
+                                <Button variant="outline">Edit</Button>
+                            </Link>
+                            <form action={`/dashboard/jobs/${job.id}/delete`} method="POST">
+                                <Button variant="destructive" type="submit">
+                                    Delete
+                                </Button>
+                            </form>
+
+                            {/* Upload Resume Dialog */}
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="secondary">Upload Resumes</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-md">
+                                    <DialogHeader>
+                                        <DialogTitle>Upload Resumes</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-2">
+                                        <UploadResumesForm jobId={job.id} />
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
+                        </CardContent>
+                    </Card>
                 ))}
 
                 {jobs.length === 0 && (

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/app/utils/hooks";
 import prisma from "@/app/utils/prisma";
-import { error } from "console";
 
 export async function GET() {
     const session = await requireUser();

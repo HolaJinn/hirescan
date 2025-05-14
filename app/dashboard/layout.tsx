@@ -1,4 +1,4 @@
-import { UserProvider } from '@auth0/nextjs-auth0/client';
+import { Toaster } from "@/components/ui/sonner"
 
 export default function RootLayout({
     children,
@@ -8,7 +8,8 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
-                <UserProvider>{children}</UserProvider>
+                {children}
+                <Toaster />
             </body>
         </html>
     );
