@@ -78,12 +78,14 @@ model Resume {
   id            String         @id @default(cuid())
   job           JobDescription @relation(fields: [jobId], references: [id], onDelete: Cascade)
   jobId         String
-  fileUrl       String // URL/path to the uploaded file
-  rawText       String? // Parsed text content from the resume
-  candidateName String? // Optional: Extracted from resume content
-  email         String? // Optional: Extracted if possible
-  linkedinUrl   String? // Optional: Extracted if found
-  matchScore    Float? // To be computed after AI scoring
-  aiSummary     String? // Optional AI-generated summary or explanation
+  fileUrl       String
+  rawText       String?
+  candidateName String?
+  email         String?
+  linkedinUrl   String?
+  matchScore    Float?
+  aiSummary     String?
+  keyStrengths  String[]
+  keyWeaknesses String[]
   uploadedAt    DateTime       @default(now())
 }

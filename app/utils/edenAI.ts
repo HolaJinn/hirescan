@@ -17,28 +17,31 @@ const edenClient = axios.create({
 // 🧠 Build resume match prompt
 export const buildResumeMatchPrompt = (jobDescription: string, resumeText: string): string => {
     return `
-    You are an HR assistant.
+You are an HR assistant.
 
-    Given the following job description and candidate resume, do the following:
+Given the following job description and candidate resume, do the following:
 
-    1. Provide a brief assessment of how well this resume matches the job.
-    2. Highlight key strengths and weaknesses.
-    3. Assign a match score on a scale from 0 to 100.
+1. Provide a brief assessment of how well this resume matches the job.
+2. Highlight key strengths and weaknesses.
+3. Assign a match score on a scale from 0 to 100.
+4. Extract the candidate's full name from the resume. If not found, return null.
 
-    ❗️Return your response strictly as a JSON object with the following format:
+❗️Return your response strictly as a JSON object with the following format:
 
-    {
-    "summary": "string",
-    "keyStrengths": ["string", "string", ...],
-    "keyWeaknesses": ["string", "string", ...],
-    "score": number
-    }
+{
+  "summary": "string",
+  "keyStrengths": ["string", "string", ...],
+  "keyWeaknesses": ["string", "string", ...],
+  "score": number,
+  "candidateName": "string | null"
+}
 
-    Job Description:
-    ${jobDescription}
+Job Description:
+${jobDescription}
 
-    Resume:
-    ${resumeText}
+Resume:
+${resumeText}
+
   `.trim();
 };
 
@@ -54,6 +57,7 @@ export const getResumeMatchScore = async ({
     keyStrengths: string[];
     keyWeaknesses: string[];
     score: number;
+    candidateName: string | null;
 }> => {
     const prompt = buildResumeMatchPrompt(jobDescription, resumeText);
 
@@ -64,7 +68,8 @@ export const getResumeMatchScore = async ({
             usage: true,
             prompt,
         });
-        console.log(response.data)
+
+        console.log(response.data);
         const raw = response.data?.response?.trim();
         const jsonMatch = raw.match(/```json\s*([\s\S]*?)\s*```/);
         if (!jsonMatch || !jsonMatch[1]) {
@@ -77,6 +82,7 @@ export const getResumeMatchScore = async ({
             keyStrengths: parsed.keyStrengths,
             keyWeaknesses: parsed.keyWeaknesses,
             score: parsed.score,
+            candidateName: parsed.candidateName ?? null,
         };
     } catch (error) {
         console.error('❌ Error calling Eden AI for resume match:', error);
@@ -85,6 +91,7 @@ export const getResumeMatchScore = async ({
             keyStrengths: [],
             keyWeaknesses: [],
             score: 0,
+            candidateName: null,
         };
     }
 };
