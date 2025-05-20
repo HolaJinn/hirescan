@@ -78,28 +78,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         strategy: "jwt",
     },
     callbacks: {
-        async jwt({ token, user }) { // Simplified params if others aren't used
-            // Add user ID from the user object (available on initial sign in) to the token
+        async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
+                token.name = user.name ?? `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
+                token.image = user.image ?? null;
+
                 const dbUser = await prisma.user.findUnique({
                     where: { id: user.id },
                     select: { verified: true },
                 });
                 token.verified = dbUser?.verified ?? false;
             }
-
             return token;
         },
         async session({ session, token }) {
-            // Add user ID from the JWT token to the session object
             if (session.user && token.id) {
                 session.user.id = token.id as string;
                 session.user.verified = token.verified as boolean;
+                session.user.name = token.name as string;
+                session.user.image = token.image as string;
             }
             return session;
         },
-        // Optional signIn callback...
     },
     pages: {
         signIn: "/signin",

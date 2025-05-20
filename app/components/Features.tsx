@@ -15,20 +15,25 @@ export function Features() {
     ];
 
     return (
-        <section id="features" className="py-20 px-6" style={{ backgroundColor: '#A9B5DF' }}>
+        <section
+            id="features"
+            className="py-20 px-6 bg-purple-100"
+        >
             <div className="max-w-6xl mx-auto text-center">
-                <h2 className="text-3xl font-semibold text-[#2D336B]">Key Features</h2>
-                <p className="mt-4 text-[#2D336B]/80 max-w-2xl mx-auto">
+                <h2 className="text-4xl font-bold text-purple-700">Key Features</h2>
+                <p className="mt-4 text-purple-600 max-w-2xl mx-auto text-lg">
                     Everything you need to make faster, smarter hiring decisions.
                 </p>
                 <div className="mt-12 grid gap-8 md:grid-cols-3 text-left">
                     {cards.map((card, idx) => (
                         <div
                             key={idx}
-                            className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition border border-[#7886C7]/20"
+                            className="rounded-xl p-8 bg-white border border-purple-200 transition-all duration-300 hover:shadow-lg hover:shadow-purple-300"
                         >
-                            <h3 className="text-xl font-semibold text-[#2D336B]">{card.title}</h3>
-                            <p className="mt-2 text-[#2D336B]/70">{card.desc}</p>
+                            <h3 className="text-xl font-extrabold text-purple-600 mb-3">
+                                {card.title}
+                            </h3>
+                            <p className="text-gray-700">{card.desc}</p>
                         </div>
                     ))}
                 </div>
