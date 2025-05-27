@@ -7,8 +7,11 @@ type Params = {
 };
 
 export default async function JobDashboard({ params }: { params: Params }) {
-    const jobId = params.jobId;
+    const { jobId } = await params;
 
+    const job = await prisma.jobDescription.findUnique({
+        where: { id: jobId }
+    });
     const resumes = await prisma.resume.findMany({
         where: { jobId },
         orderBy: {
@@ -18,7 +21,7 @@ export default async function JobDashboard({ params }: { params: Params }) {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Resumes for Job ID: {jobId}</h1>
+            <h1 className="text-2xl text-center font-bold mb-4">Resumes for Job: {job?.title}</h1>
             <ResumeList initialResumes={resumes} jobId={jobId} />
         </div>
     );

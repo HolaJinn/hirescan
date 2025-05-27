@@ -32,7 +32,7 @@ async function getResumeDetails(jobId: string, resumeId: string): Promise<Resume
 }
 
 export default async function ResumeReviewPage({ params }: ResumeReviewPageProps) {
-    const { jobId, resumeId } = params;
+    const { jobId, resumeId } = await params;
     const resume = await getResumeDetails(jobId, resumeId);
 
     if (!resume) {

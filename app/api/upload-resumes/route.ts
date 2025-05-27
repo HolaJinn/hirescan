@@ -40,61 +40,85 @@ export async function POST(req: NextRequest) {
     }
 
     for (const file of files) {
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        try {
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes);
 
-        const uniqueFileName = `${uuidv4()}.pdf`;
-        const filePath = path.join(uploadDir, uniqueFileName);
+            const uniqueFileName = `${uuidv4()}.pdf`;
+            const filePath = path.join(uploadDir, uniqueFileName);
 
-        // Save PDF file
-        await writeFile(filePath, buffer);
+            // Save PDF file
+            await writeFile(filePath, buffer);
 
-        const fileUrl = `/uploads/${uniqueFileName}`;
-        const dataBuffer = await fs.readFile(filePath);
-        const pdfData = await pdf(dataBuffer);
-        const resumeText = pdfData.text;
+            const fileUrl = `/uploads/${uniqueFileName}`;
+            const dataBuffer = await fs.readFile(filePath);
 
-        // Extract basic name and email (basic regex)
-        const emailMatch = resumeText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}/);
+            let resumeText: string;
+            try {
+                const pdfData = await pdf(dataBuffer);
+                resumeText = pdfData.text;
+            } catch (parseErr) {
+                console.error(`Failed to parse PDF (${file.name}):`, parseErr);
+                continue; // Skip this file
+            }
 
-        const email = emailMatch ? emailMatch[0] : null;
+            // Extract basic name and email
+            const emailMatch = resumeText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}/);
+            const email = emailMatch ? emailMatch[0] : null;
 
-        console.log(email);
+            // AI scoring
+            let matchScore = null;
+            let aiSummary = null;
+            let keyStrengths = null;
+            let keyWeaknesses = null;
+            let candidateName = null;
 
-        // AI match scoring
-        const {
-            score: matchScore,
-            summary: aiSummary,
-            keyStrengths,
-            keyWeaknesses,
-            candidateName
-        } = await getResumeMatchScore({
-            jobDescription: job.description,
-            resumeText,
-        });
-        console.log(candidateName)
+            try {
+                const result = await getResumeMatchScore({
+                    jobDescription: job.description,
+                    resumeText,
+                });
 
+                matchScore = result.score;
+                aiSummary = result.summary;
+                keyStrengths = result.keyStrengths;
+                keyWeaknesses = result.keyWeaknesses;
+                candidateName = result.candidateName;
+            } catch (aiErr) {
+                console.error(`AI scoring failed for ${file.name}:`, aiErr);
+                continue; // Skip this file
+            }
 
-        // Save resume record
-        const savedResume = await prisma.resume.create({
-            data: {
-                fileUrl,
-                jobId,
-                rawText: resumeText,
-                candidateName,
-                email,
-                matchScore,
-                aiSummary,
-                keyStrengths,
-                keyWeaknesses,
-            },
-        });
+            // Save to DB
+            const savedResume = await prisma.resume.create({
+                data: {
+                    fileUrl,
+                    jobId,
+                    rawText: resumeText,
+                    candidateName,
+                    email,
+                    matchScore,
+                    aiSummary,
+                    keyStrengths,
+                    keyWeaknesses,
+                },
+            });
 
-        savedFiles.push({
-            name: file.name,
-            path: fileUrl,
-            id: savedResume.id,
-        });
+            savedFiles.push({
+                name: file.name,
+                path: fileUrl,
+                id: savedResume.id,
+            });
+
+        } catch (err) {
+            console.error(`Unexpected error processing ${file.name}:`, err);
+            // Skip to next file
+            continue;
+        }
+    }
+
+    if (!savedFiles.length) {
+        return NextResponse.json({ error: "No valid resumes uploaded." }, { status: 400 });
     }
 
     return NextResponse.json({ uploaded: savedFiles }, { status: 200 });
