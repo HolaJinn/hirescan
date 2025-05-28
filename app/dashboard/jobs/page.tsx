@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { prisma } from "@/app/utils/prisma"
 import { UploadResumesForm } from "@/app/components/UploadResumesForm"
+import { JobStatusSelect } from "@/app/components/JobStatusSelect"
 
 export default async function JobsPage() {
     const jobs = await prisma.jobDescription.findMany({
@@ -54,7 +55,21 @@ export default async function JobsPage() {
                             <Dialog>
                                 <DialogTrigger asChild>
                                     <div className="cursor-pointer">
-                                        <CardTitle>{job.title}</CardTitle>
+                                        <div className="flex items-center gap-2">
+                                            <CardTitle>{job.title}</CardTitle>
+                                            <span className={`text-xs font-semibold px-2 py-1 rounded-full
+    ${{
+                                                    OPEN: "bg-green-100 text-green-700",
+                                                    CLOSED: "bg-red-100 text-red-700",
+                                                    DRAFT: "bg-gray-100 text-gray-700",
+                                                    PAUSED: "bg-yellow-100 text-yellow-700",
+                                                }[job.status]
+                                                }
+  `}>
+                                                {job.status}
+                                            </span>
+                                        </div>
+
                                         <p className="text-sm text-muted-foreground">
                                             {job._count.resumes} {job._count.resumes === 1 ? "resume" : "resumes"} submitted
                                         </p>
@@ -87,7 +102,7 @@ export default async function JobsPage() {
                         </CardHeader>
 
                         <CardContent className="flex items-center justify-between flex-wrap gap-2">
-                            {/* View Resumes Button (Left Side) */}
+
                             <Link href={`/dashboard/jobs/${job.id}`}>
                                 <Button className="bg-purple-100 text-purple-900 hover:bg-purple-200">
                                     View Resumes ({job._count.resumes})
@@ -96,6 +111,7 @@ export default async function JobsPage() {
 
                             {/* Right Side Buttons */}
                             <div className="flex items-center gap-2">
+                                <JobStatusSelect jobId={job.id} currentStatus={job.status} />
                                 <Link href={`/dashboard/jobs/${job.id}/edit`}>
                                     <Button variant="outline">Edit</Button>
                                 </Link>

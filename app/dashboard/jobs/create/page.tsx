@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { Sparkles } from "lucide-react";
 
 export default function CreateJobPage() {
     const router = useRouter()
@@ -13,6 +14,7 @@ export default function CreateJobPage() {
     const [description, setDescription] = useState("")
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
+    const [generating, setGenerating] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -33,6 +35,37 @@ export default function CreateJobPage() {
         }
     }
 
+    const handleGenerate = async () => {
+        if (!title.trim()) {
+            setError("Please enter a job title before generating.")
+            return
+        }
+
+        setGenerating(true)
+        setError("")
+
+        try {
+            const res = await fetch("/api/generate-job-description", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title }),
+            })
+
+            const data = await res.json()
+            console.log(data)
+
+            if (res.ok && data.description) {
+                setDescription(data.description)
+            } else {
+                setError(data.message || "Failed to generate job description.")
+            }
+        } catch (err) {
+            setError("An error occurred while generating.")
+        } finally {
+            setGenerating(false)
+        }
+    }
+
     return (
         <div className="max-w-xl mx-auto py-10 px-4 space-y-6">
             <h1 className="text-2xl font-bold">Create Job Description</h1>
@@ -48,6 +81,28 @@ export default function CreateJobPage() {
                         required
                     />
                 </div>
+
+                <div className="space-y-1">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleGenerate}
+                        disabled={generating}
+                    >
+                        {generating ? (
+                            "Generating..."
+                        ) : (
+                            <>
+                                <Sparkles className="mr-2 h-4 w-4 text-purple-500" />
+                                Generate with AI
+                            </>
+                        )}
+                    </Button>
+                    <p className="text-sm text-muted-foreground">
+                        Enter a job title above and click to auto-generate a description using AI.
+                    </p>
+                </div>
+
 
                 <div className="space-y-2">
                     <Label htmlFor="description">Job Description</Label>
