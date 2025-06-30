@@ -13,6 +13,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
+import Image from 'next/image'; // ✅ needed for logo
+import Logo from '@/public/hirescanlogo.png'
 
 interface NavbarProps {
     session: Session | null;
@@ -31,32 +33,33 @@ export default function Navbar({ session }: NavbarProps) {
             <div className="flex items-center gap-4">
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="md:hidden text-purple-600"
-                        >
+                        <Button variant="ghost" size="icon" className="md:hidden text-purple-600">
                             <Menu className="h-6 w-6" />
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="w-64 bg-purple-100 text-purple-700">
                         <div className="flex flex-col gap-4 mt-6">
-                            <Link
-                                href="/dashboard/jobs"
-                                className="text-lg font-medium hover:text-purple-600"
-                            >
+                            <Link href="/dashboard/jobs" className="text-lg font-medium hover:text-purple-600">
                                 Jobs
                             </Link>
                         </div>
                     </SheetContent>
                 </Sheet>
 
-                <Link
-                    href="/dashboard"
-                    className="text-xl font-bold hidden md:block text-purple-700"
-                >
-                    Resume Review
+                <Link href="/dashboard" className="flex items-center text-purple-700">
+                    {/* <div className="w-12 h-12 md:w-14 md:h-14 relative">
+                        <Image
+                            src={Logo}
+                            alt="HireScan Logo"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                    </div> */}
+                    <span className="text-xl font-bold hidden md:block">HireScan</span>
                 </Link>
+
+
 
                 <div className="hidden md:flex gap-6">
                     <Link
@@ -81,24 +84,14 @@ export default function Navbar({ session }: NavbarProps) {
                             )}
                         </Avatar>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        align="end"
-                        className="border border-purple-200 bg-purple-100 text-purple-700"
-                    >
+                    <DropdownMenuContent align="end" className="border border-purple-200 bg-purple-100 text-purple-700">
                         <DropdownMenuItem asChild>
-                            <Link href="/dashboard/profile" className="hover:text-purple-600">
-                                Profile
-                            </Link>
+                            <Link href="/dashboard/profile" className="hover:text-purple-600">Profile</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                            <Link href="/dashboard/settings" className="hover:text-purple-600">
-                                Settings
-                            </Link>
+                            <Link href="/dashboard/settings" className="hover:text-purple-600">Settings</Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                            className="hover:text-purple-600 cursor-pointer"
-                            onClick={() => signOut()}
-                        >
+                        <DropdownMenuItem onClick={() => signOut()} className="hover:text-purple-600 cursor-pointer">
                             Logout
                         </DropdownMenuItem>
                     </DropdownMenuContent>

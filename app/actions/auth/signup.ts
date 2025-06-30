@@ -4,6 +4,8 @@ import { SignupSchema } from "@/app/utils/schema/signupSchema";
 import { z } from 'zod'
 import { hash } from 'bcrypt'
 import prisma from "@/app/utils/prisma";
+import { sendVerificationEmailByAddress } from '@/app/utils/email';
+
 
 type SignupResult = {
     success: boolean;
@@ -62,6 +64,9 @@ export async function signupWithEmail(
 
         console.log('User created successfully:', email);
 
+        // Send verification email
+        const emailResult = await sendVerificationEmailByAddress(email);
+        console.log(emailResult.message);
         // Return success state
         return { success: true, message: 'Account created successfully! Please log in.' };
 

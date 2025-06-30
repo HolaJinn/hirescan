@@ -18,10 +18,17 @@ import Link from "next/link"
 import { prisma } from "@/app/utils/prisma"
 import { UploadResumesForm } from "@/app/components/UploadResumesForm"
 import { JobStatusSelect } from "@/app/components/JobStatusSelect"
+import { requireUser } from "@/app/utils/hooks"
+import CopyApplyLinkButton from "@/app/components/CopyApplyLinkButton"
 
 export default async function JobsPage() {
+    const session = await requireUser();
+
     const jobs = await prisma.jobDescription.findMany({
         orderBy: { createdAt: "desc" },
+        where: {
+            userId: session.user.id
+        },
         include: {
             _count: {
                 select: { resumes: true }
@@ -58,14 +65,13 @@ export default async function JobsPage() {
                                         <div className="flex items-center gap-2">
                                             <CardTitle>{job.title}</CardTitle>
                                             <span className={`text-xs font-semibold px-2 py-1 rounded-full
-    ${{
+                                                ${{
                                                     OPEN: "bg-green-100 text-green-700",
                                                     CLOSED: "bg-red-100 text-red-700",
                                                     DRAFT: "bg-gray-100 text-gray-700",
                                                     PAUSED: "bg-yellow-100 text-yellow-700",
                                                 }[job.status]
-                                                }
-  `}>
+                                                }`}>
                                                 {job.status}
                                             </span>
                                         </div>
@@ -112,6 +118,7 @@ export default async function JobsPage() {
                             {/* Right Side Buttons */}
                             <div className="flex items-center gap-2">
                                 <JobStatusSelect jobId={job.id} currentStatus={job.status} />
+                                <CopyApplyLinkButton jobId={job.id} />
                                 <Link href={`/dashboard/jobs/${job.id}/edit`}>
                                     <Button variant="outline">Edit</Button>
                                 </Link>

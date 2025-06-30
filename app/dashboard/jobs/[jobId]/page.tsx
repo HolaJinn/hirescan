@@ -13,11 +13,13 @@ export default async function JobDashboard({ params }: { params: Params }) {
         where: { id: jobId }
     });
     const resumes = await prisma.resume.findMany({
-        where: { jobId },
+        where: { jobId: jobId },
         orderBy: {
             uploadedAt: 'desc',
         },
     });
+
+    console.log(resumes.length)
 
     return (
         <div className="p-4">

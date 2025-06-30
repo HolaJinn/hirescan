@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 type ResumeReviewPageProps = {
@@ -22,6 +21,7 @@ type Resume = {
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+
 async function getResumeDetails(jobId: string, resumeId: string): Promise<Resume | null> {
     const res = await fetch(`${baseUrl}/api/job-description/${jobId}/resumes/${resumeId}`, {
         cache: 'no-store',
@@ -31,13 +31,24 @@ async function getResumeDetails(jobId: string, resumeId: string): Promise<Resume
     return res.json();
 }
 
+// ✅ Your provided scoring logic
+const getMatchTier = (score: number | null) => {
+    if (score === null) return { label: 'Not Scored', color: 'bg-gray-300' };
+    if (score >= 85) return { label: 'Top Match', color: 'bg-green-500' };
+    if (score >= 70) return { label: 'Strong Fit', color: 'bg-yellow-400' };
+    if (score >= 50) return { label: 'Average', color: 'bg-orange-400' };
+    return { label: 'Low Match', color: 'bg-red-500' };
+};
+
 export default async function ResumeReviewPage({ params }: ResumeReviewPageProps) {
-    const { jobId, resumeId } = await params;
+    const { jobId, resumeId } = params;
     const resume = await getResumeDetails(jobId, resumeId);
 
     if (!resume) {
         return <div className="p-4 text-red-600 font-semibold">Resume not found.</div>;
     }
+
+    const { label, color } = getMatchTier(resume.matchScore);
 
     return (
         <div className="max-w-4xl mx-auto p-6">
@@ -56,9 +67,9 @@ export default async function ResumeReviewPage({ params }: ResumeReviewPageProps
 
                     <div className="flex items-center justify-between">
                         <span className="text-sm font-medium">Match Score:</span>
-                        <Badge variant="secondary" className="text-md px-3 py-1">
-                            {resume.matchScore ?? "N/A"}
-                        </Badge>
+                        <span className={`text-white text-sm font-semibold px-3 py-1 rounded-full ${color}`}>
+                            {label} {resume.matchScore !== null ? `(${resume.matchScore})` : ""}
+                        </span>
                     </div>
 
                     <Separator />

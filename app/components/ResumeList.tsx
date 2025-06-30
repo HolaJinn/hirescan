@@ -34,7 +34,6 @@ export default function ResumeList({
     const [resumes, setResumes] = useState<Resume[]>(initialResumes);
     const [sortBy, setSortBy] = useState<'matchScore' | 'uploadedAt'>('uploadedAt');
     const [resumeToDelete, setResumeToDelete] = useState<Resume | null>(null);
-
     useEffect(() => {
         const fetchSorted = async () => {
             const res = await fetch(`/api/job-description/${jobId}/resumes?sortBy=${sortBy}&order=desc`);

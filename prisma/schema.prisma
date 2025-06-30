@@ -26,7 +26,7 @@ model User {
   accounts        Account[]
   sessions        Session[]
   role            String           @default("recruiter") // can be 'admin' or 'recruiter'
-  jobDescriptions JobDescription[]
+  jobDescriptions JobDescription[] 
 }
 
 model Account {
@@ -67,7 +67,7 @@ model JobDescription {
   id          String    @id @default(cuid())
   title       String
   description String
-  user        User      @relation(fields: [userId], references: [id])
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   resumes     Resume[]
   status      JobStatus @default(DRAFT)
