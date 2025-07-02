@@ -13,6 +13,10 @@
 # testing
 /coverage
 
+#don't push 
+/app/utils/edenAI.ts
+/app/utils/generateJobDescription.ts
+
 # next.js
 /.next/
 /out/
