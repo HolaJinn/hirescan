@@ -14,90 +14,35 @@ Checklist:
 
  Error handling on login failure
 
- Forgot password / Reset password flow
+TODO Forgot password / Reset password flow
 
  Profile settings page (update name, email, picture)
 
  Role-based access control (recruiter vs admin, etc.)
 
-📄 2. Job Management (for Recruiters)
-Checklist:
-
- Create new job posting (title, description, status)
-
- Edit job posting
-
- Delete job posting
-
- Set job status (OPEN, DRAFT, PAUSED, CLOSED)
-
- Job visibility controls (public/private)
-
- Shareable public application link
-
- Preview job post before publishing
 
 📤 3. Resume Submission (for Candidates)
 Checklist:
 
- Public application page for each job
-
- Full name, email, resume PDF upload
-
- File type validation (PDF only)
-
- Resume storage with unique filename
-
- Upload progress / error state
-
- Duplicate submission prevention (optional)
-
  Email confirmation to candidate
 
-🤖 4. Resume Analysis & AI Matching
-Checklist:
 
- Extract text from resume (pdf-parse)
-
- Extract candidate name and email
-
- AI match score using job description
-
- Summary, strengths, weaknesses
-
- Error fallback if AI API fails
-
- Show parsing results to recruiter
-
- View raw resume text (optional)
 
 📋 5. Resume Management (for Recruiters)
 Checklist:
-
- View all resumes by job
-
- Sort by match score or upload date
-
- Download resume file
-
- See parsed fields (name, score, summary)
 
  Mark applicants (shortlist / rejected etc.)
 
  Export applicant data (CSV)
 
+
 📡 6. Public Job Application Links
 Checklist:
-
- Copyable public application link
-
- Public route with no dashboard or navbar
-
- Error page if job doesn't exist or is closed
 
  SEO-optimized metadata for job pages
 
  QR code to share job link (optional)
+
 
 🧪 7. Validation & Error Handling
 Checklist:
@@ -108,7 +53,8 @@ Checklist:
 
  404 or fallback pages for invalid routes
 
- Display API/network errors in UI
+ Display API/network errors in 
+ 
 
 🧾 8. Dashboard & UI
 Checklist:
