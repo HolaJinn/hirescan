@@ -59,7 +59,7 @@ Checklist:
 🧾 8. Dashboard & UI
 Checklist:
 
- Dashboard with job/resume stats
+ Dashboard with job/resume stats (add charts)
 
  Responsive layout (mobile & desktop)
 
@@ -71,15 +71,7 @@ Checklist:
 
  Dark mode toggle (optional)
 
-🌟 NICE-TO-HAVE FEATURES
-📊 1. Analytics Dashboard
- Number of applicants per job
 
- Average match score
-
- Conversion rate (clicks to apply)
-
- Time to first application
 
 📬 2. Notifications
  Email notification on new resume submission

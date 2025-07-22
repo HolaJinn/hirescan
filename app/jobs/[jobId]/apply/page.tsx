@@ -1,6 +1,5 @@
-import { prisma } from '@/app/utils/prisma'
-import ApplicationForm from '@/app/components/ApplicationForm'
-import Link from 'next/link'
+import { prisma } from '@/app/utils/prisma';
+import ApplicationForm from '@/app/components/ApplicationForm';
 
 export default async function ApplyPage({ params }: { params: { jobId: string } }) {
     const job = await prisma.jobDescription.findUnique({
@@ -18,6 +17,12 @@ export default async function ApplyPage({ params }: { params: { jobId: string } 
             </div>
         );
     }
+
+    // 👇 Increment the view count
+    await prisma.jobDescription.update({
+        where: { id: job.id },
+        data: { views: { increment: 1 } }
+    });
 
     return (
         <div className="max-w-xl mx-auto py-10 px-4">

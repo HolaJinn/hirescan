@@ -73,6 +73,7 @@ model JobDescription {
   status      JobStatus @default(DRAFT)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  views       Int       @default(0)
 }
 
 enum JobStatus {
