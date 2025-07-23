@@ -23,3 +23,8 @@ export async function validateToken(token: string) {
 
     return { valid: true, message: 'Your email has been successfully verified!' };
 }
+
+export async function createPasswordResetToken(email: string) {
+  const token = randomBytes(32).toString('hex');
+  return token;
+}
