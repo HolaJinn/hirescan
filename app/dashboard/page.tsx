@@ -3,6 +3,7 @@ import { requireUser } from '@/app/utils/hooks';
 import { redirect } from 'next/navigation';
 import prisma from '@/app/utils/prisma';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import Link from 'next/link';
 
 async function getApplicantsPerJob(userId: string) {
   const jobs = await prisma.jobDescription.findMany({
@@ -104,7 +105,7 @@ export default async function DashboardPage() {
   const session = await requireUser();
   if (!session?.user) return redirect('/login');
   if (!session?.user.verified) return redirect('/validate-email');
-
+  const showCompanyOnboarding = !session?.user.companyId;
   const [applicantsPerJob, averageMatchScore, timeToFirstApplication, conversionRate] = await Promise.all([
     getApplicantsPerJob(session?.user.id),
     getAverageMatchScore(session?.user.id),
@@ -115,6 +116,25 @@ export default async function DashboardPage() {
   return (
     <div className="p-6 space-y-8">
       <h1 className="text-2xl font-bold">Welcome, {session.user.name} 👋</h1>
+
+      {showCompanyOnboarding && (
+        <Card className="border-dashed border-2 border-yellow-400 bg-yellow-50/30 shadow-none">
+          <CardHeader>
+            <CardTitle className="text-yellow-700">🚧 Company Profile Incomplete</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-yellow-700 mb-4">
+              You haven’t completed your company profile yet. This helps you stand out to applicants and build trust.
+            </p>
+            <Link href="/company-onboarding">
+              <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-md transition">
+                Complete Company Profile
+              </button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
+
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Applicants per Job */}

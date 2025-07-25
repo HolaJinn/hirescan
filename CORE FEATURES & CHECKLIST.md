@@ -1,3 +1,9 @@
+Personal Features : 
+1. Company onboarding 
+2. Having multiple recruiters within same company
+3. Stripe payment
+
+
 ✅ CORE FEATURES & CHECKLIST
 🔐 1. User Authentication & Account Management
 Checklist:

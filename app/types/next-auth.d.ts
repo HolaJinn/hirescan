@@ -9,6 +9,7 @@ declare module "next-auth" {
             email: string | null;
             image: string | null;
             verified: boolean;
+            companyId?: string | null;
         } & DefaultSession["user"];
     }
 
@@ -19,6 +20,7 @@ declare module "next-auth" {
         email: string | null;
         image: string | null;
         verified: boolean;
+        companyId: string | null;
     }
 }
 
@@ -30,5 +32,6 @@ declare module "next-auth/jwt" {
         email: string | null;
         image: string | null;
         verified: boolean;
+        companyId?: string | null;
     }
 }

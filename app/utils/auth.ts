@@ -69,8 +69,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     lastName: user.lastName,
                     email: user.email,
                     image: user.image,
-                    verified: user.verified
-                    // Do NOT return the password hash
+                    verified: user.verified,
+                    companyId: user.companyId
                 };
             }
         })
@@ -87,9 +87,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
                 const dbUser = await prisma.user.findUnique({
                     where: { id: user.id },
-                    select: { verified: true },
+                    select: { verified: true, companyId: true },
                 });
                 token.verified = dbUser?.verified ?? false;
+                token.companyId = dbUser?.companyId ?? null;
             }
             return token;
         },
@@ -99,6 +100,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 session.user.verified = token.verified as boolean;
                 session.user.name = token.name as string;
                 session.user.image = token.image as string;
+                session.user.companyId = token.companyId as string | null;
             }
             return session;
         },

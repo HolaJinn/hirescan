@@ -89,6 +89,9 @@ export default function Navbar({ session }: NavbarProps) {
                             <Link href="/dashboard/profile" className="hover:text-purple-600">Profile</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
+                            <Link href="/dashboard/company-details" className="hover:text-purple-600">Company Details</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
                             <Link href="/dashboard/settings" className="hover:text-purple-600">Settings</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => signOut()} className="hover:text-purple-600 cursor-pointer">
