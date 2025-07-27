@@ -1,4 +1,3 @@
-// app/recruiter/profile/page.tsx
 import { requireUser } from '@/app/utils/hooks';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/app/utils/prisma';
@@ -8,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { Sparkles } from 'lucide-react';
 
 export default async function RecruiterProfilePage() {
   const session = await requireUser();
@@ -63,9 +63,11 @@ export default async function RecruiterProfilePage() {
             <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
         </div>
-        <Link href="/recruiter/profile/edit">
-          <Button variant="outline">Edit Profile</Button>
-        </Link>
+        <Link href="/dashboard/profile/edit">
+            <Button variant="default" className="rounded-full px-6 py-2 shadow">
+              <Sparkles className="mr-1 h-4 w-4" /> Edit Profile
+            </Button>
+          </Link>
       </div>
 
       <Separator />
