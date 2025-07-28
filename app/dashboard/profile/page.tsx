@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Sparkles } from 'lucide-react';
+import { AvatarUploader } from '@/app/components/AvatarUploader';
 
 export default async function RecruiterProfilePage() {
   const session = await requireUser();
@@ -52,22 +53,21 @@ export default async function RecruiterProfilePage() {
     <div className="max-w-5xl mx-auto py-10 px-4 space-y-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Avatar className="h-16 w-16">
-            <AvatarImage src={user.image ?? ''} />
-            <AvatarFallback>
-              {user.firstName?.[0] ?? 'U'}{user.lastName?.[0] ?? ''}
-            </AvatarFallback>
-          </Avatar>
+          <AvatarUploader
+            imageUrl={user.image}
+            firstName={user.firstName}
+            lastName={user.lastName}
+          />
           <div>
             <h1 className="text-2xl font-bold">{user.firstName} {user.lastName}</h1>
             <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
         </div>
         <Link href="/dashboard/profile/edit">
-            <Button variant="default" className="rounded-full px-6 py-2 shadow">
-              <Sparkles className="mr-1 h-4 w-4" /> Edit Profile
-            </Button>
-          </Link>
+          <Button variant="default" className="rounded-full px-6 py-2 shadow">
+            <Sparkles className="mr-1 h-4 w-4" /> Edit Profile
+          </Button>
+        </Link>
       </div>
 
       <Separator />

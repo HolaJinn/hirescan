@@ -1,8 +1,8 @@
 Personal Features : 
-1. Company onboarding 
-2. Having multiple recruiters within same company
-3. Stripe payment
-
+1. Having multiple recruiters within same company
+2. Stripe payment
+3. Add image (profile and company)
+4. Work on navbar reload (after changing name intials or profile image)
 
 ✅ CORE FEATURES & CHECKLIST
 🔐 1. User Authentication & Account Management

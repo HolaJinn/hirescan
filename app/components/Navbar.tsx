@@ -76,7 +76,7 @@ export default function Navbar({ session }: NavbarProps) {
                     <DropdownMenuTrigger asChild>
                         <Avatar className="h-9 w-9 cursor-pointer bg-purple-600">
                             {session.user.image ? (
-                                <AvatarImage src={session.user.image} alt="User avatar" />
+                                <AvatarImage src={session.user.image} alt="User avatar" className="h-full w-full object-cover"/>
                             ) : (
                                 <AvatarFallback className="text-white font-semibold bg-purple-700">
                                     {getInitials(session.user.name || '')}

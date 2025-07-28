@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Sparkles, Building2, Globe2, Info, CalendarDays } from 'lucide-react';
 import Link from 'next/link';
+import { CompanyLogoUploader } from '@/app/components/CompanyLogoUploader';
 
 export default async function CompanyDetailsPage() {
   const session = await requireUser();
@@ -22,16 +23,14 @@ export default async function CompanyDetailsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-10 px-4">
       <div className="max-w-5xl mx-auto space-y-10">
-        
+
         {/* Hero Section */}
         <div className="relative bg-white border rounded-2xl p-8 shadow-lg flex items-center justify-between">
           <div className="flex items-center space-x-6">
-            <Avatar className="h-20 w-20 ring-2 ring-primary shadow-md">
-              <AvatarImage src={company.logoUrl ?? ''} />
-              <AvatarFallback className="text-2xl">
-                {company.name[0]}
-              </AvatarFallback>
-            </Avatar>
+            <CompanyLogoUploader
+              logoUrl={company.logoUrl ?? null}
+              companyName={company.name}
+            />
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-blue-500 text-transparent bg-clip-text">
                 {company.name}
