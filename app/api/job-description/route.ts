@@ -33,17 +33,23 @@ export async function POST(req: Request) {
     const user = await prisma.user.findUnique({
         where: {
             email: session.user.email!
+        },
+        include: {
+            company: true
         }
     })
     if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-
+    if (!user.companyId) {
+        return NextResponse.json({ error: "User is not associated with a company" }, { status: 400 });
+    }
     const job = await prisma.jobDescription.create({
         data: {
             title,
             description,
-            userId: user.id
+            userId: user.id,
+            companyId: user.companyId
         }
     })
     return NextResponse.json(job)

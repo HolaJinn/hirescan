@@ -68,6 +68,12 @@ export default function Navbar({ session }: NavbarProps) {
                     >
                         Jobs
                     </Link>
+                    <Link
+                        href="/dashboard/recruiters"
+                        className="text-sm font-medium hover:underline text-purple-600"
+                    >
+                        Recruiters
+                    </Link>
                 </div>
             </div>
 

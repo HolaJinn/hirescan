@@ -33,7 +33,7 @@ model User {
   image           String?
   accounts        Account[]
   sessions        Session[]
-  role            String           @default("recruiter") // can be 'admin' or 'recruiter'
+  role            String           @default("owner")
   jobDescriptions JobDescription[] 
   company         Company? @relation(fields: [companyId], references: [id])
   companyId       String?
@@ -47,6 +47,7 @@ model Company {
   description String?
   logoUrl     String?
   users       User[]
+  jobDescriptions JobDescription[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -92,6 +93,8 @@ model JobDescription {
   description String
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
+  company     Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId   String
   resumes     Resume[]
   status      JobStatus @default(DRAFT)
   createdAt   DateTime  @default(now())

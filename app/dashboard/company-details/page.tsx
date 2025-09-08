@@ -2,7 +2,6 @@
 import { requireUser } from '@/app/utils/hooks';
 import { prisma } from '@/app/utils/prisma';
 import { redirect } from 'next/navigation';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Sparkles, Building2, Globe2, Info, CalendarDays } from 'lucide-react';
@@ -12,7 +11,12 @@ import { CompanyLogoUploader } from '@/app/components/CompanyLogoUploader';
 export default async function CompanyDetailsPage() {
   const session = await requireUser();
   if (!session?.user) return redirect('/login');
-  if (!session.user.companyId) return redirect('/company-onboarding');
+  if (!session.user.companyId) return redirect('/dashboard/company-onboarding');
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true, companyId: true }
+  });
 
   const company = await prisma.company.findUnique({
     where: { id: session.user.companyId },
@@ -40,11 +44,15 @@ export default async function CompanyDetailsPage() {
               </p>
             </div>
           </div>
-          <Link href="/dashboard/company-details/edit">
-            <Button variant="default" className="rounded-full px-6 py-2 shadow">
-              <Sparkles className="mr-2 h-4 w-4" /> Edit Company
-            </Button>
-          </Link>
+
+          {/* Only show for owners */}
+          {user?.role === 'owner' && (
+            <Link href="/dashboard/company-details/edit">
+              <Button variant="default" className="rounded-full px-6 py-2 shadow">
+                <Sparkles className="mr-2 h-4 w-4" /> Edit Company
+              </Button>
+            </Link>
+          )}
         </div>
 
         {/* Details Grid */}

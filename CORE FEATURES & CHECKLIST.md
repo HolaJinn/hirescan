@@ -1,8 +1,15 @@
 Personal Features : 
 1. Having multiple recruiters within same company
+SHOULD DO FOR THE PREVIOUS STEP:
+DONE make the initial user has owner role (just for separation between owner and recruiter)
+DONE update job description schema to make it have the ID of the company aswell
+DONE show jobs by company
+DONE make filters to show the jobs created by the user 
+DONE Only the OWNNER role can do the modification of the company's info, CRUD recruiters and payment methods
+DONE show recruiters list for all the recruiters(still only owner can create recruiters) or just remove the recruiters tab for non owners
+optimize logic of resume uploading : first upload, then make the call to the AI API so it doesn't slow the app
+Make sure to prevent the actions of the recruiter that are not allowed on a server side (e.g : add recuiter, I removed the button for the recuiter but he can still access the endpoint, still he should be unauthorized to do it)
 2. Stripe payment
-3. Add image (profile and company)
-4. Work on navbar reload (after changing name intials or profile image)
 
 ✅ CORE FEATURES & CHECKLIST
 🔐 1. User Authentication & Account Management

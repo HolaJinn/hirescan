@@ -5,6 +5,7 @@ import prisma from '@/app/utils/prisma';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
 
+
 async function getApplicantsPerJob(userId: string) {
   const jobs = await prisma.jobDescription.findMany({
     where: { userId },
@@ -105,7 +106,12 @@ export default async function DashboardPage() {
   const session = await requireUser();
   if (!session?.user) return redirect('/login');
   if (!session?.user.verified) return redirect('/validate-email');
-  const showCompanyOnboarding = !session?.user.companyId;
+  
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true, companyId: true }
+  })
+  const showCreateCompanyBanner = user?.role === "owner" && !user?.companyId
   const [applicantsPerJob, averageMatchScore, timeToFirstApplication, conversionRate] = await Promise.all([
     getApplicantsPerJob(session?.user.id),
     getAverageMatchScore(session?.user.id),
@@ -113,11 +119,12 @@ export default async function DashboardPage() {
     getConversionRate(session?.user.id)
   ]);
 
-  return (
+    return (
     <div className="p-6 space-y-8">
       <h1 className="text-2xl font-bold">Welcome, {session.user.name} 👋</h1>
 
-      {showCompanyOnboarding && (
+      {showCreateCompanyBanner ? (
+        // 🚧 Show company onboarding banner
         <Card className="border-dashed border-2 border-yellow-400 bg-yellow-50/30 shadow-none">
           <CardHeader>
             <CardTitle className="text-yellow-700">🚧 Company Profile Incomplete</CardTitle>
@@ -126,78 +133,79 @@ export default async function DashboardPage() {
             <p className="text-sm text-yellow-700 mb-4">
               You haven’t completed your company profile yet. This helps you stand out to applicants and build trust.
             </p>
-            <Link href="/company-onboarding">
+            <Link href="/dashboard/company-onboarding">
               <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-md transition">
                 Complete Company Profile
               </button>
             </Link>
           </CardContent>
         </Card>
+      ) : (
+        // 📊 Show dashboard cards
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Applicants per Job */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Applicants per Job</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {applicantsPerJob.map((item: any, idx: number) => (
+                <div key={idx} className="flex justify-between text-sm">
+                  <span>{item.jobTitle}</span>
+                  <span className="font-semibold text-purple-600">{item.count}</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Average Match Score */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Average Match Score</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {averageMatchScore.map((item: any, idx: number) => (
+                <div key={idx} className="flex justify-between text-sm">
+                  <span>{item.jobTitle}</span>
+                  <span className="font-semibold text-green-600">{item.score}%</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Time to First Application */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Time to First Application</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {timeToFirstApplication.map((item: any, idx: number) => (
+                <div key={idx} className="flex justify-between text-sm">
+                  <span>{item.jobTitle}</span>
+                  <span className="font-semibold text-orange-500">
+                    {item.hours === 'N/A' ? 'N/A' : `${item.hours}h`}
+                  </span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* Conversion Rate */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Conversion Rate</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {conversionRate.map((item, idx) => (
+                <div key={idx} className="flex justify-between text-sm">
+                  <span>{item.jobTitle}</span>
+                  <span className="font-semibold text-blue-600">{item.rate}%</span>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
       )}
-
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Applicants per Job */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Applicants per Job</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-1">
-            {applicantsPerJob.map((item: any, idx: number) => (
-              <div key={idx} className="flex justify-between text-sm">
-                <span>{item.jobTitle}</span>
-                <span className="font-semibold text-purple-600">{item.count}</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Average Match Score */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Average Match Score</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-1">
-            {averageMatchScore.map((item: any, idx: number) => (
-              <div key={idx} className="flex justify-between text-sm">
-                <span>{item.jobTitle}</span>
-                <span className="font-semibold text-green-600">{item.score}%</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Time to First Application */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Time to First Application</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-1">
-            {timeToFirstApplication.map((item: any, idx: number) => (
-              <div key={idx} className="flex justify-between text-sm">
-                <span>{item.jobTitle}</span>
-                <span className="font-semibold text-orange-500">
-                  {item.hours === 'N/A' ? 'N/A' : `${item.hours}h`}
-                </span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Conversion Rate</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-1">
-            {conversionRate.map((item, idx) => (
-              <div key={idx} className="flex justify-between text-sm">
-                <span>{item.jobTitle}</span>
-                <span className="font-semibold text-blue-600">{item.rate}%</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-      </div>
     </div>
   );
 }
