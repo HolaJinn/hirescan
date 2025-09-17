@@ -109,6 +109,13 @@ enum JobStatus {
   PAUSED
 }
 
+enum ResumeStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 model Resume {
   id            String         @id @default(cuid())
   job           JobDescription @relation(fields: [jobId], references: [id], onDelete: Cascade)
@@ -122,5 +129,6 @@ model Resume {
   aiSummary     String?
   keyStrengths  String[]
   keyWeaknesses String[]
+  status        ResumeStatus   @default(PENDING)
   uploadedAt    DateTime       @default(now())
 }

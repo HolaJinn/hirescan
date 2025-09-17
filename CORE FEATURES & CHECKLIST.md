@@ -7,8 +7,14 @@ DONE show jobs by company
 DONE make filters to show the jobs created by the user 
 DONE Only the OWNNER role can do the modification of the company's info, CRUD recruiters and payment methods
 DONE show recruiters list for all the recruiters(still only owner can create recruiters) or just remove the recruiters tab for non owners
-optimize logic of resume uploading : first upload, then make the call to the AI API so it doesn't slow the app
+
+
+DONE optimize logic of resume uploading : first upload, then make the call to the AI API so it doesn't slow the app
+
 Make sure to prevent the actions of the recruiter that are not allowed on a server side (e.g : add recuiter, I removed the button for the recuiter but he can still access the endpoint, still he should be unauthorized to do it)
+
+Test file upload to a file service
+
 2. Stripe payment
 
 ✅ CORE FEATURES & CHECKLIST

@@ -1,6 +1,7 @@
 // app/api/generate-job-description/route.ts or pages/api/generate-job-description.ts
 
 import { generateJobDescription } from '@/app/utils/generateJobDescription'
+import { generateJobDescriptionOpenRouter } from '@/app/utils/generateJobDescriptionOpenRouter'
 import { NextResponse } from 'next/server' // use 'next/server' for app router or 'next' for pages
 
 export async function POST(req: Request) {
@@ -12,7 +13,9 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'Invalid or missing job title' }, { status: 400 })
         }
 
-        const description = await generateJobDescription({ jobTitle: title })
+        // const description = await generateJobDescription({ jobTitle: title })
+        const description = await generateJobDescriptionOpenRouter({ jobTitle: title })
+
         console.log(description)
         return NextResponse.json({ description })
     } catch (error) {
