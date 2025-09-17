@@ -5,7 +5,7 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import prisma from "@/app/utils/prisma";
 import pdf from "pdf-parse";
-import { getResumeMatchScore } from "@/app/utils/edenAI";
+// import { getResumeMatchScore } from "@/app/utils/edenAI";
 
 export async function POST(req: NextRequest) {
     const formData = await req.formData();
@@ -74,16 +74,16 @@ export async function POST(req: NextRequest) {
             let candidateName = null;
 
             try {
-                const result = await getResumeMatchScore({
-                    jobDescription: job.description,
-                    resumeText,
-                });
+                // const result = await getResumeMatchScore({
+                //     jobDescription: job.description,
+                //     resumeText,
+                // });
 
-                matchScore = result.score;
-                aiSummary = result.summary;
-                keyStrengths = result.keyStrengths;
-                keyWeaknesses = result.keyWeaknesses;
-                candidateName = result.candidateName;
+                // matchScore = result.score;
+                // aiSummary = result.summary;
+                // keyStrengths = result.keyStrengths;
+                // keyWeaknesses = result.keyWeaknesses;
+                // candidateName = result.candidateName;
             } catch (aiErr) {
                 console.error(`AI scoring failed for ${file.name}:`, aiErr);
                 continue; // Skip this file
@@ -99,8 +99,8 @@ export async function POST(req: NextRequest) {
                     email,
                     matchScore,
                     aiSummary,
-                    keyStrengths,
-                    keyWeaknesses,
+                    // keyStrengths,
+                    // keyWeaknesses,
                 },
             });
 
