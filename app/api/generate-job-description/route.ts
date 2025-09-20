@@ -1,6 +1,5 @@
-// app/api/generate-job-description/route.ts or pages/api/generate-job-description.ts
 
-import { generateJobDescription } from '@/app/utils/generateJobDescription'
+// import { generateJobDescription } from '@/app/utils/generateJobDescription'
 import { generateJobDescriptionOpenRouter } from '@/app/utils/generateJobDescriptionOpenRouter'
 import { NextResponse } from 'next/server' // use 'next/server' for app router or 'next' for pages
 
