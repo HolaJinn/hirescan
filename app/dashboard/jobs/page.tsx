@@ -59,6 +59,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         ? []
         : await getJobs(user!.companyId!, onlyMine, session.user.id);
 
+    type Job = Awaited<ReturnType<typeof getJobs>>[number];
     return (
         <div className="max-w-5xl mx-auto py-10 px-4 space-y-6">
             {/* Header */}
@@ -117,7 +118,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
             {/* Jobs List */}
             {!showCompanyOnboarding && (
                 <div className="space-y-4">
-                    {jobs.map((job) => (
+                    {jobs.map((job: Job) => (
                         <Card
                             key={job.id}
                             className="hover:shadow-md transition-shadow duration-200"
