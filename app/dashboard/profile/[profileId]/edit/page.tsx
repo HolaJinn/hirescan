@@ -9,6 +9,15 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
+type Resume = { matchScore: number | null };
+type Job = {
+  id: string;
+  title: string;
+  status: string;
+  views: number;
+  resumes: Resume[];
+};
+
 export default async function RecruiterProfilePage() {
   const session = await requireUser();
   if (!session?.user) return redirect('/api/auth/login');
@@ -36,18 +45,25 @@ export default async function RecruiterProfilePage() {
   });
 
   if (!user) return <p className="text-center mt-10">User not found</p>;
+  const jobDescriptions: Job[] = user.jobDescriptions;
 
-  const totalJobs = user.jobDescriptions.length;
-  const totalApplicants = user.jobDescriptions.reduce((sum, job) => sum + job.resumes.length, 0);
+  const totalJobs = jobDescriptions.length;
+
+  const totalApplicants = jobDescriptions.reduce<number>(
+    (sum: number, job: Job) => sum + job.resumes.length,
+    0
+  );
+
   const avgMatchScore = (() => {
-    const allScores = user.jobDescriptions.flatMap(job =>
-      job.resumes.map(r => r.matchScore).filter(s => s !== null) as number[]
+    const allScores: number[] = jobDescriptions.flatMap((job: Job) =>
+      job.resumes
+        .map(r => r.matchScore)
+        .filter((score): score is number => score !== null)
     );
     return allScores.length > 0
       ? Math.round(allScores.reduce((a, b) => a + b, 0) / allScores.length)
       : 0;
   })();
-
   return (
     <div className="max-w-5xl mx-auto py-10 px-4 space-y-8">
       <div className="flex items-center justify-between">
