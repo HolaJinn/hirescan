@@ -2,12 +2,16 @@ import { NextResponse } from 'next/server';
 import prisma from '@/app/utils/prisma';
 import { requireUser } from '@/app/utils/hooks';
 
+type JobWithCount = {
+  title: string;
+  _count: { resumes: number };
+};
 export async function GET() {
     const session = await requireUser();
     if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const jobs = await prisma.jobDescription.findMany({
+    const jobs: JobWithCount[] = await prisma.jobDescription.findMany({
         where: {
             user: { email: session.user.email }
         },
