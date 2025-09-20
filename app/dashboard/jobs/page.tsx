@@ -16,10 +16,20 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { prisma } from "@/app/utils/prisma"
-import { UploadResumesForm } from "@/app/components/UploadResumesForm"
 import { JobStatusSelect } from "@/app/components/JobStatusSelect"
 import { requireUser } from "@/app/utils/hooks"
 import CopyApplyLinkButton from "@/app/components/CopyApplyLinkButton"
+
+// ✅ Define JobStatus type to match your Prisma model
+type JobStatus = "OPEN" | "CLOSED" | "DRAFT" | "PAUSED";
+
+// ✅ Map job statuses to CSS classes
+const statusStyles: Record<JobStatus, string> = {
+    OPEN: "bg-green-100 text-green-700",
+    CLOSED: "bg-red-100 text-red-700",
+    DRAFT: "bg-gray-100 text-gray-700",
+    PAUSED: "bg-yellow-100 text-yellow-700",
+};
 
 interface JobsPageProps {
     searchParams: Promise<{ filter?: string }>;
@@ -46,7 +56,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
     // Fetch current user with company info
     const user = await prisma.user.findUnique({
         where: { id: session.user.id },
-        include: { company: true }
+        include: { company: true },
     });
 
     const showCompanyOnboarding = !user?.companyId;
@@ -54,12 +64,13 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
     const { filter } = await searchParams;
     const onlyMine = filter === "mine";
 
-
     const jobs = showCompanyOnboarding
         ? []
         : await getJobs(user!.companyId!, onlyMine, session.user.id);
 
+    // ✅ Extract type of a single job
     type Job = Awaited<ReturnType<typeof getJobs>>[number];
+
     return (
         <div className="max-w-5xl mx-auto py-10 px-4 space-y-6">
             {/* Header */}
@@ -77,7 +88,6 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                 <div className="flex items-center gap-2">
                     {!showCompanyOnboarding && (
                         <>
-                            {/* Toggle filter button */}
                             {onlyMine ? (
                                 <Link href="/dashboard/jobs">
                                     <Button variant="outline">Show All Company Jobs</Button>
@@ -100,11 +110,14 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
             {showCompanyOnboarding && (
                 <Card className="border-dashed border-2 border-yellow-400 bg-yellow-50/30 shadow-none">
                     <CardHeader>
-                        <CardTitle className="text-yellow-700">🚧 Company Profile Incomplete</CardTitle>
+                        <CardTitle className="text-yellow-700">
+                            🚧 Company Profile Incomplete
+                        </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-sm text-yellow-700 mb-4">
-                            You haven’t completed your company profile yet. This helps you stand out to applicants and build trust.
+                            You haven’t completed your company profile yet. This helps you
+                            stand out to applicants and build trust.
                         </p>
                         <Link href="/dashboard/company-onboarding">
                             <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-md transition">
@@ -129,14 +142,9 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                                         <div className="cursor-pointer">
                                             <div className="flex items-center gap-2">
                                                 <CardTitle>{job.title}</CardTitle>
-                                                <span className={`text-xs font-semibold px-2 py-1 rounded-full
-                                                    ${{
-                                                        OPEN: "bg-green-100 text-green-700",
-                                                        CLOSED: "bg-red-100 text-red-700",
-                                                        DRAFT: "bg-gray-100 text-gray-700",
-                                                        PAUSED: "bg-yellow-100 text-yellow-700",
-                                                    }[job.status]
-                                                    }`}>
+                                                <span
+                                                    className={`text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[job.status as JobStatus]}`}
+                                                >
                                                     {job.status}
                                                 </span>
                                             </div>
@@ -149,7 +157,11 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                                             </p>
 
                                             <p className="text-sm text-muted-foreground">
-                                                {job._count.resumes} {job._count.resumes === 1 ? "resume" : "resumes"} submitted
+                                                {job._count.resumes}{" "}
+                                                {job._count.resumes === 1
+                                                    ? "resume"
+                                                    : "resumes"}{" "}
+                                                submitted
                                             </p>
                                             <CardDescription className="line-clamp-2">
                                                 {job.description}
@@ -158,11 +170,17 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                                     </DialogTrigger>
                                     <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
                                         <DialogHeader>
-                                            <DialogTitle className="text-xl">{job.title}</DialogTitle>
+                                            <DialogTitle className="text-xl">
+                                                {job.title}
+                                            </DialogTitle>
                                         </DialogHeader>
                                         <div className="space-y-4">
                                             <p className="text-sm text-muted-foreground">
-                                                {job._count.resumes} {job._count.resumes === 1 ? "resume" : "resumes"} submitted
+                                                {job._count.resumes}{" "}
+                                                {job._count.resumes === 1
+                                                    ? "resume"
+                                                    : "resumes"}{" "}
+                                                submitted
                                             </p>
                                         </div>
                                         <div className="space-y-4">
@@ -188,27 +206,19 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
 
                                 {/* Right Side Buttons */}
                                 <div className="flex items-center gap-2">
-                                    <JobStatusSelect jobId={job.id} currentStatus={job.status} />
+                                    <JobStatusSelect
+                                        jobId={job.id}
+                                        currentStatus={job.status}
+                                    />
                                     <CopyApplyLinkButton jobId={job.id} />
                                     <Link href={`/dashboard/jobs/${job.id}/edit`}>
                                         <Button variant="outline">Edit</Button>
                                     </Link>
 
-                                    {/* <Dialog>
-                                        <DialogTrigger asChild>
-                                            <Button variant="outline">Upload Resumes</Button>
-                                        </DialogTrigger>
-                                        <DialogContent className="sm:max-w-md">
-                                            <DialogHeader>
-                                                <DialogTitle>Upload Resumes</DialogTitle>
-                                            </DialogHeader>
-                                            <div className="space-y-2">
-                                                <UploadResumesForm jobId={job.id} />
-                                            </div>
-                                        </DialogContent>
-                                    </Dialog> */}
-
-                                    <form action={`/dashboard/jobs/${job.id}/delete`} method="POST">
+                                    <form
+                                        action={`/dashboard/jobs/${job.id}/delete`}
+                                        method="POST"
+                                    >
                                         <Button variant="destructive" type="submit">
                                             Delete
                                         </Button>
@@ -219,12 +229,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                     ))}
 
                     {jobs.length === 0 && (
-                        <p className="text-muted-foreground">
-                            No job descriptions found.
-                        </p>
+                        <p className="text-muted-foreground">No job descriptions found.</p>
                     )}
                 </div>
             )}
         </div>
-    )
+    );
 }
