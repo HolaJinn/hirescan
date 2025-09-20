@@ -15,7 +15,7 @@ export const generateJobDescriptionOpenRouter = async ({
     const response = await axios.post(
       "https://openrouter.ai/api/v1/chat/completions",
       {
-        model: "deepseek/deepseek-r1:free", 
+        model: "x-ai/grok-4-fast:free", 
         messages: [
           {
             role: "system",

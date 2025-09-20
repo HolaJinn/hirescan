@@ -15,6 +15,8 @@ Make sure to prevent the actions of the recruiter that are not allowed on a serv
 
 Test file upload to a file service
 
+Check the send password reset token feature (somehow the email is not being sent)
+
 2. Stripe payment
 
 ✅ CORE FEATURES & CHECKLIST
