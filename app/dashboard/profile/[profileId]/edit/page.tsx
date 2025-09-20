@@ -117,7 +117,7 @@ export default async function RecruiterProfilePage() {
           <p className="text-muted-foreground">No jobs posted yet.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {user.jobDescriptions.map(job => (
+            {user.jobDescriptions.map((job: Job) => (
               <Card key={job.id}>
                 <CardHeader className="flex justify-between items-center">
                   <CardTitle>{job.title}</CardTitle>
