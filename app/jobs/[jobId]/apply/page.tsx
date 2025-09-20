@@ -1,9 +1,13 @@
 import { prisma } from '@/app/utils/prisma';
 import ApplicationForm from '@/app/components/ApplicationForm';
 
-export default async function ApplyPage({ params }: { params: { jobId: string } }) {
+interface ApplyPageProps  {
+    params: Promise<{jobId: string}>
+}
+export default async function ApplyPage({ params }: ApplyPageProps) {
+    const {jobId} = await params;
     const job = await prisma.jobDescription.findUnique({
-        where: { id: params.jobId },
+        where: { id: jobId },
         select: { id: true, title: true, status: true },
     });
 

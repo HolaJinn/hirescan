@@ -2,8 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/utils/prisma';
 
-export async function GET(req: NextRequest, { params }: { params: { resumeId: string } }) {
-    const { resumeId } = await params;
+export async function GET(req: NextRequest, context: { params: Promise<{ resumeId: string }> }) {
+    const { resumeId: resumeId } = await context.params;
     try {
         const resume = await prisma.resume.findUnique({
             where: { id: resumeId },
@@ -21,9 +21,9 @@ export async function GET(req: NextRequest, { params }: { params: { resumeId: st
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { resumeId: string } }
+    context: { params: Promise<{ resumeId: string }> }
 ) {
-    const { resumeId } = await params;
+    const { resumeId: resumeId } = await context.params;
 
     try {
         await prisma.resume.delete({

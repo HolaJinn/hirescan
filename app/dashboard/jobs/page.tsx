@@ -21,6 +21,10 @@ import { JobStatusSelect } from "@/app/components/JobStatusSelect"
 import { requireUser } from "@/app/utils/hooks"
 import CopyApplyLinkButton from "@/app/components/CopyApplyLinkButton"
 
+interface JobsPageProps {
+    searchParams: Promise<{ filter?: string }>;
+}
+
 // ✅ server action to allow filtering
 async function getJobs(companyId: string, onlyMine: boolean, userId: string) {
     return prisma.jobDescription.findMany({
@@ -36,7 +40,7 @@ async function getJobs(companyId: string, onlyMine: boolean, userId: string) {
     });
 }
 
-export default async function JobsPage({ searchParams }: { searchParams: { filter?: string } }) {
+export default async function JobsPage({ searchParams }: JobsPageProps) {
     const session = await requireUser();
 
     // Fetch current user with company info
@@ -47,7 +51,9 @@ export default async function JobsPage({ searchParams }: { searchParams: { filte
 
     const showCompanyOnboarding = !user?.companyId;
 
-    const onlyMine = searchParams.filter === "mine";
+    const { filter } = await searchParams;
+    const onlyMine = filter === "mine";
+
 
     const jobs = showCompanyOnboarding
         ? []
@@ -187,7 +193,7 @@ export default async function JobsPage({ searchParams }: { searchParams: { filte
                                         <Button variant="outline">Edit</Button>
                                     </Link>
 
-                                    <Dialog>
+                                    {/* <Dialog>
                                         <DialogTrigger asChild>
                                             <Button variant="outline">Upload Resumes</Button>
                                         </DialogTrigger>
@@ -199,7 +205,7 @@ export default async function JobsPage({ searchParams }: { searchParams: { filte
                                                 <UploadResumesForm jobId={job.id} />
                                             </div>
                                         </DialogContent>
-                                    </Dialog>
+                                    </Dialog> */}
 
                                     <form action={`/dashboard/jobs/${job.id}/delete`} method="POST">
                                         <Button variant="destructive" type="submit">

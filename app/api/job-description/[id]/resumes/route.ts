@@ -6,8 +6,8 @@ type Params = {
     id: string;
 };
 
-export async function GET(req: NextRequest, { params }: { params: Params}) {
-    const { id } = await params;
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+    const { id: id } = await context.params;
     const { searchParams } = new URL(req.url);
     const sortBy = searchParams.get("sortBy") || "uploadedAt"; // 'score' or 'uploadedAt'
     const order = searchParams.get("order") === "asc" ? "asc" : "desc";

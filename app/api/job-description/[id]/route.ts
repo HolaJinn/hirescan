@@ -2,16 +2,16 @@ import { NextResponse } from "next/server";
 import { requireUser } from "@/app/utils/hooks";
 import prisma from "@/app/utils/prisma";
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, context: { params: Promise<{ id: string }> }) {
     const session = await requireUser();
     if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
-
+    const {id} = await context.params;
     const { title, description } = await req.json();
 
     const job = await prisma.jobDescription.findUnique({
-        where: { id: params.id },
+        where: { id: id },
         include: { user: true }
     })
 
@@ -24,21 +24,22 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
 
     const updated = await prisma.jobDescription.update({
-        where: { id: params.id },
+        where: { id },
         data: { title, description }
     })
 
     return NextResponse.json(updated)
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, context: { params: Promise<{ id: string }> }) {
     const session = await requireUser();
     if (!session?.user) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
+    const {id} = await context.params;
 
     const job = await prisma.jobDescription.findUnique({
-        where: { id: params.id },
+        where: { id },
         include: { user: true }
     })
 
@@ -51,7 +52,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     await prisma.jobDescription.delete({
-        where: { id: params.id }
+        where: { id }
     })
 
     return NextResponse.json({ success: true })

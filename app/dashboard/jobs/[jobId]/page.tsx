@@ -2,12 +2,8 @@
 import ResumeList from '@/app/components/ResumeList';
 import prisma from '@/app/utils/prisma';
 
-type Params = {
-    jobId: string;
-};
-
-export default async function JobDashboard({ params }: { params: Params }) {
-    const { jobId } = await params;
+export default async function JobDashboard(context: { params: Promise<{ jobId: string }> }) {
+    const { jobId: jobId } = await context.params;
 
     const job = await prisma.jobDescription.findUnique({
         where: { id: jobId }

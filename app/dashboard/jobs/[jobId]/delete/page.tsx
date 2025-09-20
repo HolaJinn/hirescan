@@ -5,10 +5,9 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { revalidatePath } from "next/cache"
 
-type Params = Promise<{ jobId: string }>
 
-export default async function DeleteJobPage({ params }: { params: Params }) {
-    const { jobId } = await params;
+export default async function DeleteJobPage(context: { params: Promise<{ jobId: string }> }) {
+    const { jobId: jobId } = await context.params;
     const job = await prisma.jobDescription.findUnique({
         where: { id: jobId },
     })

@@ -16,6 +16,7 @@
 #don't push 
 /app/utils/edenAI.ts
 /app/utils/generateJobDescription.ts
+/public/uploads
 
 # next.js
 /.next/

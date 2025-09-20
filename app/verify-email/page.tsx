@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import { validateToken } from '@/app/utils/tokens';
-
-export default async function VerifyEmailPage({ searchParams }: { searchParams: { token?: string } }) {
-    const token = searchParams.token;
+interface VerifyEmailProps {
+    searchParams: Promise<{token: string}>
+}
+export default async function VerifyEmailPage({ searchParams }: VerifyEmailProps) {
+    const {token} = await searchParams;
 
     if (!token) {
         return <p className="text-center mt-20 text-red-600">Invalid or missing token.</p>;

@@ -5,10 +5,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { revalidatePath } from "next/cache"
 
-type Params = Promise<{ jobId: string }>
 
-export default async function EditJobPage({ params }: { params: Params }) {
-    const { jobId } = await params;
+export default async function EditJobPage(context: { params: Promise<{ jobId: string }> }) {
+    const { jobId: jobId } = await context.params;
     const job = await prisma.jobDescription.findUnique({
         where: { id: jobId },
     })

@@ -6,8 +6,9 @@ import fs from "fs/promises";
 import pdf from "pdf-parse";
 import { getResumeMatchScore } from "@/app/utils/openrouterAI";
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const resumeId = await params.id;
+export async function POST(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id: resumeId} = await context.params;
+
   console.log("hello")
   try {
     // Fetch resume and job info

@@ -4,8 +4,8 @@ import path from "path";
 import { mkdir, writeFile, unlink } from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
-  const jobId = params.id;
+export async function POST(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id: jobId } = await context.params; 
   const formData = await req.formData();
 
   const fullName = formData.get("fullName") as string;

@@ -2,10 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 type ResumeReviewPageProps = {
-    params: {
+    params: Promise<{
         jobId: string;
         resumeId: string;
-    };
+    }>;
 };
 
 type Resume = {
@@ -40,8 +40,8 @@ const getMatchTier = (score: number | null) => {
     return { label: 'Low Match', color: 'bg-red-500' };
 };
 
-export default async function ResumeReviewPage({ params }: ResumeReviewPageProps) {
-    const { jobId, resumeId } = await params;
+export default async function ResumeReviewPage(context: ResumeReviewPageProps) {
+    const { jobId, resumeId } = await context.params;
     const resume = await getResumeDetails(jobId, resumeId);
 
     if (!resume) {

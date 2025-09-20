@@ -3,16 +3,33 @@
 import { useFormState, useFormStatus } from 'react-dom';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { addRecruiter } from '@/app/actions/recruiters/add-recruiter'; // You’ll create this
+import { addRecruiter } from '@/app/actions/recruiters/add-recruiter';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 
-const initialState = {
+type RecruiterFormState =
+  | {
+    success: boolean;
+    message: string;
+    errors?: undefined;
+  }
+  | {
+    success: boolean;
+    message: string;
+    errors: {
+      email?: string[];
+      firstName?: string[];
+      lastName?: string[];
+      password?: string[];
+    };
+  };
+
+const initialState: RecruiterFormState = {
   success: false,
   message: '',
-  errors: [],
+  errors: undefined,
 };
 
 function SubmitButton() {
@@ -34,8 +51,10 @@ export default function AddRecruiterPage() {
     }
   }, [state.success, router]);
 
-  const getFieldError = (fieldName: string): string | undefined => {
-    return state.errors?.find((err: any) => err.path.includes(fieldName));
+  type FieldName = 'email' | 'firstName' | 'lastName' | 'password';
+
+  const getFieldError = (fieldName: FieldName): string | undefined => {
+    return state.errors?.[fieldName]?.[0];
   };
 
   return (

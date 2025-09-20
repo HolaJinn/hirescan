@@ -3,9 +3,9 @@ import { prisma } from "@/app/utils/prisma"
 
 export async function POST(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    context: { params: Promise<{ id: string }> }
 ) {
-    const { id } = await params
+    const {id} = await context.params;
     const body = await req.json()
     const newStatus = body.status as "OPEN" | "PAUSED" | "CLOSED" | "DRAFT"
 
