@@ -10,6 +10,15 @@ import Link from 'next/link';
 import { Sparkles } from 'lucide-react';
 import { AvatarUploader } from '@/app/components/AvatarUploader';
 
+type Resume = { matchScore: number | null };
+type Job = {
+  id: string;
+  title: string;
+  status: string;
+  views: number;
+  resumes: Resume[];
+};
+
 export default async function RecruiterProfilePage() {
   const session = await requireUser();
   if (!session?.user) return redirect('/api/auth/login');
@@ -28,9 +37,7 @@ export default async function RecruiterProfilePage() {
           title: true,
           status: true,
           views: true,
-          resumes: {
-            select: { matchScore: true },
-          },
+          resumes: { select: { matchScore: true } },
         },
       },
     },
@@ -38,11 +45,21 @@ export default async function RecruiterProfilePage() {
 
   if (!user) return <p className="text-center mt-10">User not found</p>;
 
-  const totalJobs = user.jobDescriptions.length;
-  const totalApplicants = user.jobDescriptions.reduce((sum, job) => sum + job.resumes.length, 0);
+  // Type the array explicitly
+  const jobDescriptions: Job[] = user.jobDescriptions;
+
+  const totalJobs = jobDescriptions.length;
+
+  const totalApplicants = jobDescriptions.reduce<number>(
+    (sum: number, job: Job) => sum + job.resumes.length,
+    0
+  );
+
   const avgMatchScore = (() => {
-    const allScores = user.jobDescriptions.flatMap(job =>
-      job.resumes.map(r => r.matchScore).filter(s => s !== null) as number[]
+    const allScores: number[] = jobDescriptions.flatMap((job: Job) =>
+      job.resumes
+        .map(r => r.matchScore)
+        .filter((score): score is number => score !== null) // type guard
     );
     return allScores.length > 0
       ? Math.round(allScores.reduce((a, b) => a + b, 0) / allScores.length)
@@ -99,11 +116,11 @@ export default async function RecruiterProfilePage() {
 
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">Your Posted Jobs</h2>
-        {user.jobDescriptions.length === 0 ? (
+        {jobDescriptions.length === 0 ? (
           <p className="text-muted-foreground">No jobs posted yet.</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {user.jobDescriptions.map(job => (
+            {jobDescriptions.map((job: Job) => (
               <Card key={job.id}>
                 <CardHeader className="flex justify-between items-center">
                   <CardTitle>{job.title}</CardTitle>
