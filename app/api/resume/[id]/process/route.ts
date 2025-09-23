@@ -11,7 +11,6 @@ export async function POST(
   context: { params: Promise<{ id: string }> }
 ) {
   const { id: resumeId } = await context.params;
-  console.log("hello")
   // Detect production (Vercel)
   const isProd = process.env.VERCEL === "1";
   const pdf = require('pdf-parse')
