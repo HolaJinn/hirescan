@@ -12,10 +12,11 @@ export async function POST(
 ) {
   const { id: resumeId } = await context.params;
 
+  // Detect production (Vercel)
   const isProd = process.env.VERCEL === "1";
 
   try {
-    // Fetch resume and job info
+    // Fetch resume and associated job
     const resume = await prisma.resume.findUnique({
       where: { id: resumeId },
       include: { job: true },
@@ -31,7 +32,7 @@ export async function POST(
     let dataBuffer: Buffer;
 
     if (isProd) {
-      // ✅ Fetch file from Vercel Blob storage
+      // ✅ Production: fetch PDF from Vercel Blob storage
       const response = await fetch(resume.fileUrl);
       if (!response.ok) {
         throw new Error(`Failed to fetch resume from Blob: ${response.status}`);
@@ -39,12 +40,12 @@ export async function POST(
       const arrayBuffer = await response.arrayBuffer();
       dataBuffer = Buffer.from(arrayBuffer);
     } else {
-      // ✅ Local dev: read from public/uploads
+      // ✅ Local dev: read PDF from public/uploads
       const filePath = path.join(process.cwd(), "public", resume.fileUrl);
       dataBuffer = await fs.readFile(filePath);
     }
 
-    // Parse PDF
+    // Parse PDF content
     const pdfData = await pdf(dataBuffer);
     const resumeText = pdfData.text;
 
@@ -54,12 +55,13 @@ export async function POST(
     );
     const email = resume.email || emailMatch?.[0] || null;
 
-    // Call OpenRouter AI
+    // Call OpenRouter AI for match scoring
     const aiResult = await getResumeMatchScore({
       jobDescription: resume.job.description,
       resumeText,
     });
 
+    // Update resume record in DB
     const updatedResume = await prisma.resume.update({
       where: { id: resumeId },
       data: {
