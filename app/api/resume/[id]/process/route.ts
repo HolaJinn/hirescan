@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/utils/prisma";
 import path from "path";
 import fs from "fs/promises";
-import pdf from "pdf-parse";
+// import pdf from "pdf-parse";
 import { getResumeMatchScore } from "@/app/utils/openrouterAI";
 
 export async function POST(
@@ -11,10 +11,10 @@ export async function POST(
   context: { params: Promise<{ id: string }> }
 ) {
   const { id: resumeId } = await context.params;
-
+  console.log("hello")
   // Detect production (Vercel)
   const isProd = process.env.VERCEL === "1";
-
+  const pdf = require('pdf-parse')
   try {
     // Fetch resume and associated job
     const resume = await prisma.resume.findUnique({
