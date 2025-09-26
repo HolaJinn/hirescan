@@ -20,7 +20,7 @@ type Resume = {
     keyWeaknesses: string[];
 };
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
 async function getResumeDetails(jobId: string, resumeId: string): Promise<Resume | null> {
     const res = await fetch(`${baseUrl}/api/job-description/${jobId}/resumes/${resumeId}`, {
