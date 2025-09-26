@@ -18,12 +18,14 @@ export async function sendResetPasswordEmail(email: string) {
   const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
 
   try {
+    console.log("hello")
     await resend.emails.send({
-      from: 'benamor.yacine@yahoo.fr',
+      from: 'onboarding@resend.dev',
       to: email,
       subject: 'Reset your password',
       html: `<p>Click <a href="${resetUrl}">here</a> to reset your password. This link will expire in 1 hour.</p>`,
     });
+    console.log("hello")
 
     return { success: true, message: 'Reset link sent. Check your inbox.' };
   } catch (err) {

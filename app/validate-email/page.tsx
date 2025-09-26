@@ -1,7 +1,6 @@
 'use client';
 
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import MailIcon from '@/public/mail-icon.png'; // Optional: a mail icon SVG or PNG
 
