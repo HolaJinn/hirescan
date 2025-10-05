@@ -2,12 +2,10 @@ import { notFound, redirect } from "next/navigation";
 import { prisma } from "@/app/utils/prisma";
 import EditJobForm from "./editJobForm";
 
-interface PageProps {
-  params: { jobId: string };
-}
 
-export default async function EditJobPage({ params }: PageProps) {
-  const { jobId } = params;
+export default async function EditJobPage(context: { params: Promise<{ jobId: string }> }) {
+  const { jobId: jobId } = await context.params;
+
   const job = await prisma.jobDescription.findUnique({
     where: { id: jobId },
   });
