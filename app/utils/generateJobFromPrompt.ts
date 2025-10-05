@@ -2,6 +2,7 @@ import axios from "axios"
 import { buildJobDescriptionPrompt } from "./jobDescriptionPrompt";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY!
+const CURRENT_MODEL = process.env.CURRENT_MODEL!
 
 export const generateJobFromPromptOpenRouter = async ({
     prompt,
@@ -13,7 +14,7 @@ export const generateJobFromPromptOpenRouter = async ({
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
-                model: "x-ai/grok-4-fast:free",
+                model: `${CURRENT_MODEL}`,
                 messages: [
                     {
                         role: "system",

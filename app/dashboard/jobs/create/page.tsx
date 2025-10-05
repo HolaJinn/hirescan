@@ -14,7 +14,6 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { generateJobFromPromptOpenRouter } from "@/app/utils/generateJobFromPrompt"
 
 
 export default function CreateJobPage() {
