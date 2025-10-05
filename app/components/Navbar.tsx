@@ -13,8 +13,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
-import Image from 'next/image'; // ✅ needed for logo
-import Logo from '@/public/hirescanlogo.png'
 
 interface NavbarProps {
     session: Session | null;
@@ -73,6 +71,12 @@ export default function Navbar({ session }: NavbarProps) {
                         className="text-sm font-medium hover:underline text-purple-600"
                     >
                         Recruiters
+                    </Link>
+                    <Link
+                        href="/dashboard/stats"
+                        className="text-sm font-medium hover:underline text-purple-600"
+                    >
+                        Stats
                     </Link>
                 </div>
             </div>

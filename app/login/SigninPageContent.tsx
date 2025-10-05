@@ -114,15 +114,15 @@ export default function SigninPageContent() {
               </form>
 
               <Separator className="my-6" />
-
-              <Button
+              {/* Removed signin with Google, I need to setup that first */}  
+              {/* <Button
                 variant="outline"
                 className="w-full"
                 onClick={handleGoogleSignIn}
                 disabled={isGoogleLoading}
               >
                 {isGoogleLoading ? 'Redirecting...' : 'Sign In with Google'}
-              </Button>
+              </Button> */}
             </CardContent>
             <CardFooter className="justify-center text-sm px-0">
               <span>Don't have an account?&nbsp;</span>

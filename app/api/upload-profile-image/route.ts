@@ -1,4 +1,3 @@
-// app/api/upload-profile-image/route.ts
 import { writeFile } from "fs/promises";
 import { join } from "path";
 import { NextRequest, NextResponse } from "next/server";

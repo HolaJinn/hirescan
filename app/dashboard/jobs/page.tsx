@@ -2,18 +2,9 @@ import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { prisma } from "@/app/utils/prisma"
 import { JobStatusSelect } from "@/app/components/JobStatusSelect"
@@ -137,65 +128,33 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                             className="hover:shadow-md transition-shadow duration-200"
                         >
                             <CardHeader>
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <div className="cursor-pointer">
-                                            <div className="flex items-center gap-2">
-                                                <CardTitle>{job.title}</CardTitle>
-                                                <span
-                                                    className={`text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[job.status as JobStatus]}`}
-                                                >
-                                                    {job.status}
-                                                </span>
-                                            </div>
+                                <Link
+                                    href={`/dashboard/jobs/${job.id}/details`}
+                                    className="cursor-pointer block hover:bg-gray-50 rounded-lg  transition"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <CardTitle>{job.title}</CardTitle>
+                                        <span
+                                            className={`text-xs font-semibold px-2 py-1 rounded-full ${statusStyles[job.status as JobStatus]}`}
+                                        >
+                                            {job.status}
+                                        </span>
+                                    </div>
 
-                                            <p className="text-sm text-muted-foreground">
-                                                Created by{" "}
-                                                <span className="font-medium">
-                                                    {job.user.firstName} {job.user.lastName}
-                                                </span>
-                                            </p>
+                                    <p className="text-sm text-muted-foreground">
+                                        Created by{" "}
+                                        <span className="font-medium">
+                                            {job.user.firstName} {job.user.lastName}
+                                        </span>
+                                    </p>
 
-                                            <p className="text-sm text-muted-foreground">
-                                                {job._count.resumes}{" "}
-                                                {job._count.resumes === 1
-                                                    ? "resume"
-                                                    : "resumes"}{" "}
-                                                submitted
-                                            </p>
-                                            <CardDescription className="line-clamp-2">
-                                                {job.description}
-                                            </CardDescription>
-                                        </div>
-                                    </DialogTrigger>
-                                    <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
-                                        <DialogHeader>
-                                            <DialogTitle className="text-xl">
-                                                {job.title}
-                                            </DialogTitle>
-                                        </DialogHeader>
-                                        <div className="space-y-4">
-                                            <p className="text-sm text-muted-foreground">
-                                                {job._count.resumes}{" "}
-                                                {job._count.resumes === 1
-                                                    ? "resume"
-                                                    : "resumes"}{" "}
-                                                submitted
-                                            </p>
-                                        </div>
-                                        <div className="space-y-4">
-                                            <label className="text-sm font-medium text-muted-foreground">
-                                                Full Description
-                                            </label>
-                                            <Textarea
-                                                readOnly
-                                                value={job.description}
-                                                className="resize-none h-[30rem] text-base"
-                                            />
-                                        </div>
-                                    </DialogContent>
-                                </Dialog>
+                                    <p className="text-sm text-muted-foreground">
+                                        {job._count.resumes}{" "}
+                                        {job._count.resumes === 1 ? "resume" : "resumes"} submitted
+                                    </p>
+                                </Link>
                             </CardHeader>
+
 
                             <CardContent className="flex items-center justify-between flex-wrap gap-2">
                                 <Link href={`/dashboard/jobs/${job.id}`}>

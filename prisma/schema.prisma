@@ -28,7 +28,7 @@ model User {
   firstName       String?
   lastName        String?
   email           String?          @unique
-  verified        Boolean          @default(false)
+  verified        Boolean          @default(true)
   password        String?
   image           String?
   accounts        Account[]
@@ -96,7 +96,7 @@ model JobDescription {
   company     Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId   String
   resumes     Resume[]
-  status      JobStatus @default(DRAFT)
+  status      JobStatus @default(OPEN)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   views       Int       @default(0)

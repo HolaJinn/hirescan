@@ -4,7 +4,6 @@ SHOULD DO FOR THE PREVIOUS STEP:
 
 Make sure to prevent the actions of the recruiter that are not allowed on a server side (e.g : add recuiter, I removed the button for the recuiter but he can still access the endpoint, still he should be unauthorized to do it)
 
-Check the send password reset token feature (somehow the email is not being sent)
 
 2. Stripe payment
 

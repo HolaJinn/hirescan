@@ -108,18 +108,19 @@ export default function SignupPage() {
                         <div className="flex-grow border-t border-purple-300"></div>
                     </div>
 
-                    <Button
+                    {/* Removed signin with Google, I need to setup that first */}
+                    {/* <Button
                         variant="outline"
                         className="w-full border-purple-300 text-purple-700"
                         onClick={handleGoogleSignIn}
                         disabled={isGoogleLoading}
                     >
                         {isGoogleLoading ? 'Redirecting...' : 'Continue with Google'}
-                    </Button>
+                    </Button> */}
                 </CardContent>
                 <CardFooter className="justify-center text-sm">
                     <span>Already have an account?&nbsp;</span>
-                    <Link href="/signin" className="font-medium text-purple-600 hover:underline">
+                    <Link href="/login" className="font-medium text-purple-600 hover:underline">
                         Log in
                     </Link>
                 </CardFooter>
