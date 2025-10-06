@@ -47,8 +47,16 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
       Italic,
       Underline,
       Heading.configure({ levels: [1, 2] }),
-      BulletList,
-      OrderedList,
+      BulletList.configure({
+        HTMLAttributes: {
+          class: "list-disc ml-2",
+        },
+      }),
+      OrderedList.configure({
+        HTMLAttributes: {
+          class: "list-decimal ml-2",
+        },
+      }),
       ListItem,
     ],
     content: value,
