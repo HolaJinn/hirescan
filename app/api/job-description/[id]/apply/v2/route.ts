@@ -1,39 +1,13 @@
+// /app/api/job-description/[id]/apply/v2/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/utils/prisma";
 import path from "path";
 import { mkdir, writeFile, unlink } from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
 import { put, del } from "@vercel/blob";
+import { Client } from "@upstash/qstash";
 
-// ✅ Helper: publish message to QStash
-async function publishToQStash(message: any) {
-  const qstashToken = process.env.QSTASH_TOKEN;
-  const qstashUrl = process.env.QSTASH_URL;
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
-
-  if (!qstashToken || !qstashUrl) {
-    console.error("❌ QStash credentials missing");
-    return;
-  }
-  console.log(`${APP_URL}/api/process-resume`)
-  const res = await fetch(`${qstashUrl}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${qstashToken}`,
-      "Content-Type": "application/json",
-    },
-    
-    body: JSON.stringify({
-      destination: `${APP_URL}/api/process-resume`, 
-      body: JSON.stringify(message),
-    }),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    console.error("❌ Failed to publish to QStash:", errText);
-  }
-}
+const qstash = new Client({ token: process.env.QSTASH_TOKEN! });
 
 export async function POST(
   req: NextRequest,
@@ -86,7 +60,7 @@ export async function POST(
       fileUrl = `/uploads/${uniqueFileName}`;
     }
 
-    // 🔄 If resume exists for same email & job, delete old one
+    // Delete old resume if exists
     if (emailFromForm) {
       const existingResume = await prisma.resume.findFirst({
         where: { jobId, email: emailFromForm },
@@ -94,25 +68,17 @@ export async function POST(
 
       if (existingResume) {
         try {
-          if (isProd) {
-            await del(existingResume.fileUrl);
-          } else {
-            const oldFilePath = path.join(
-              process.cwd(),
-              "public",
-              existingResume.fileUrl
-            );
-            await unlink(oldFilePath);
-          }
-        } catch (fileErr) {
-          console.warn("Failed to delete old resume file:", fileErr);
+          if (isProd) await del(existingResume.fileUrl);
+          else await unlink(path.join(process.cwd(), "public", existingResume.fileUrl));
+        } catch (err) {
+          console.warn("Failed to delete old resume file:", err);
         }
 
         await prisma.resume.delete({ where: { id: existingResume.id } });
       }
     }
 
-    // ✅ Save resume metadata in DB
+    // Save new resume
     const resume = await prisma.resume.create({
       data: {
         jobId,
@@ -122,13 +88,17 @@ export async function POST(
       },
     });
 
-    // 📨 Publish message to QStash for async processing
-    await publishToQStash({ resumeId: resume.id });
+    // ✅ Publish to QStash
+    const result = await qstash.publishJSON({
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/api/process-resume`,
+      body: { resumeId: resume.id },
+    });
 
     return NextResponse.json({
       success: true,
       message: "Resume uploaded and queued for processing",
       resumeId: resume.id,
+      qstashMessageId: result.messageId,
     });
   } catch (err) {
     console.error("Unexpected error:", err);

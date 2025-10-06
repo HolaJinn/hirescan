@@ -29,6 +29,7 @@
     "@tiptap/react": "^3.6.2",
     "@tiptap/starter-kit": "^3.6.2",
     "@types/pdf-parse": "^1.1.5",
+    "@upstash/qstash": "^2.8.3",
     "@vercel/blob": "^2.0.0",
     "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
