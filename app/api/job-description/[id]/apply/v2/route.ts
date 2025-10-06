@@ -9,12 +9,13 @@ import { put, del } from "@vercel/blob";
 async function publishToQStash(message: any) {
   const qstashToken = process.env.QSTASH_TOKEN;
   const qstashUrl = process.env.QSTASH_URL;
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
   if (!qstashToken || !qstashUrl) {
     console.error("❌ QStash credentials missing");
     return;
   }
-
+  console.log(`${APP_URL}/api/process-resume`)
   const res = await fetch(`${qstashUrl}`, {
     method: "POST",
     headers: {
@@ -23,7 +24,7 @@ async function publishToQStash(message: any) {
     },
     
     body: JSON.stringify({
-      destination: `${process.env.NEXT_PUBLIC_APP_URL}/api/process-resume`, 
+      destination: `${APP_URL}/api/process-resume`, 
       body: JSON.stringify(message),
     }),
   });
