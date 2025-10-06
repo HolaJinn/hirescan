@@ -10,7 +10,6 @@ export default function ApplicationForm({ jobId }: { jobId: string }) {
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
-  const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,7 +22,7 @@ export default function ApplicationForm({ jobId }: { jobId: string }) {
 
     setLoading(true)
 
-    const res = await fetch(`/api/job-description/${jobId}/apply`, {
+    const res = await fetch(`/api/job-description/${jobId}/apply/v2`, {
       method: 'POST',
       body: formData,
     })
