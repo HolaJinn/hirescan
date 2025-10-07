@@ -8,50 +8,65 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Briefcase,
   Users,
-  CheckCircle,
   FileText,
 } from "lucide-react";
+import hiringHero from "@/public/hiringHero.svg"
 
 export default function HomePage() {
   return (
     <main className="bg-white text-gray-900">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-6xl mx-auto px-6 pt-20 pb-24 text-center">
-          <div className="flex justify-center mb-6">
-            <Image
-              src={Logo}
-              alt="HireScan Logo"
-              width={130}
-              height={130}
-              className="rounded-md"
-            />
+        <div className="max-w-7xl mx-auto px-6 pt-20 pb-24 grid md:grid-cols-2 items-center gap-12">
+          {/* Left side */}
+          <div className="text-left">
+            <div className="flex mb-6">
+              <Image
+                src={Logo}
+                alt="HireScan Logo"
+                width={130}
+                height={130}
+                className="rounded-md"
+              />
+            </div>
+            <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-6">
+              Smarter Hiring, Powered by AI
+            </h1>
+            <p className="text-lg text-gray-600 max-w-md mb-8">
+              HireScan helps recruiters create job descriptions, collect
+              applications, and instantly see how candidates match — all in one
+              secure platform.
+            </p>
+            <div className="flex gap-4">
+              <Link href="/dashboard/jobs">
+                <Button className="bg-purple-700 text-white hover:bg-purple-800 px-6 py-2 text-lg rounded-xl">
+                  Start Hiring
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button
+                  variant="outline"
+                  className="border-purple-700 text-purple-700 hover:bg-purple-100 px-6 py-2 text-lg rounded-xl"
+                >
+                  Create an Account
+                </Button>
+              </Link>
+            </div>
           </div>
-          <h1 className="text-5xl font-bold tracking-tight text-gray-900 mb-6">
-            Smarter Hiring, Powered by AI
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-            HireScan helps recruiters create job descriptions, collect
-            applications, and instantly see how candidates match — all in one
-            secure platform.
-          </p>
-          <div className="flex justify-center gap-4">
-            <Link href="/dashboard/jobs">
-              <Button className="bg-purple-700 text-white hover:bg-purple-800 px-6 py-2 text-lg rounded-xl">
-                Start Hiring
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button
-                variant="outline"
-                className="border-purple-700 text-purple-700 hover:bg-purple-100 px-6 py-2 text-lg rounded-xl"
-              >
-                Create an Account
-              </Button>
-            </Link>
+
+          {/* Right side (SVG Image) */}
+          <div className="hidden md:flex justify-center">
+            <Image
+              src={hiringHero} // <-- put your SVG file under /public
+              alt="Hiring Illustration"
+              width={600}
+              height={500}
+              className="w-full max-w-lg object-contain"
+            />
           </div>
         </div>
       </section>
+
 
       {/* Features Section */}
       <section className="py-20 bg-gray-50">
