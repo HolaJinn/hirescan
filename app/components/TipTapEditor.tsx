@@ -17,6 +17,7 @@ import {
   ListOrdered as OrderedListIcon,
   Heading1,
   Heading2,
+  Heading3,
 } from "lucide-react"
 
 import BulletList from '@tiptap/extension-bullet-list'
@@ -46,7 +47,9 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
       Bold,
       Italic,
       Underline,
-      Heading.configure({ levels: [1, 2] }),
+      Heading.configure({ 
+        levels: [1, 2, 3],
+      }),
       BulletList.configure({
         HTMLAttributes: {
           class: "list-disc ml-2",
@@ -137,6 +140,12 @@ export default function TiptapEditor({ value, onChange }: TiptapEditorProps) {
           isActive={editor.isActive("heading", { level: 2 })}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           label="Heading 2"
+        />
+        <ToolbarButton
+          icon={Heading3}
+          isActive={editor.isActive("heading", { level: 3 })}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          label="Heading 3"
         />
       </div>
 

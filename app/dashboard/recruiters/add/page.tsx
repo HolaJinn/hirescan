@@ -35,7 +35,7 @@ const initialState: RecruiterFormState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white" disabled={pending}>
+    <Button type="submit" className="w-full bg-purple-600 hover:bg-purple-700 text-white" disabled={pending}>
       {pending ? 'Adding...' : 'Add Recruiter'}
     </Button>
   );
@@ -61,7 +61,7 @@ export default function AddRecruiterPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
       <Card className="w-full max-w-md shadow-lg border border-gray-200">
         <CardHeader className="text-center">
-          <CardTitle className="text-blue-700">Add a New Recruiter</CardTitle>
+          <CardTitle className="text-purple-700">Add a New Recruiter</CardTitle>
           <CardDescription>Fill in the details to add another recruiter to your team.</CardDescription>
         </CardHeader>
         <CardContent>

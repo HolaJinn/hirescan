@@ -92,7 +92,21 @@ export default async function RecruitersPage() {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle>
-                        {member.firstName} {member.lastName}
+                        {member?.firstName || member?.lastName ? (
+                          <>
+                            {member.firstName
+                              ? member.firstName.charAt(0).toUpperCase() +
+                              member.firstName.slice(1).toLowerCase()
+                              : ""}
+                            {" "}
+                            {member.lastName
+                              ? member.lastName.charAt(0).toUpperCase() +
+                              member.lastName.slice(1).toLowerCase()
+                              : ""}
+                          </>
+                        ) : (
+                          ""
+                        )}
                       </CardTitle>
                       {/* ✅ Role badge */}
                       <span className={`text-xs font-semibold px-2 py-1 rounded-full
