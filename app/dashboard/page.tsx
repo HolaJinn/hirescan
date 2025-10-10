@@ -18,10 +18,14 @@ export default async function DashboardPage() {
   const session = await requireUser()
   if (!session?.user) return redirect("/login")
   if (!session?.user.verified) return redirect("/validate-email")
-
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { role: true, companyId: true },
+    select: {
+      role: true,
+      companyId: true,
+      firstName: true,
+      lastName: true,
+    },
   })
 
   const showCreateCompanyBanner = user?.role === "owner" && !user?.companyId
@@ -29,13 +33,13 @@ export default async function DashboardPage() {
   // ✅ Fetch latest 3 jobs for this user (only if company exists)
   const jobs = !showCreateCompanyBanner
     ? await prisma.jobDescription.findMany({
-        where: { userId: session.user.id },
-        orderBy: { createdAt: "desc" },
-        take: 3,
-        include: {
-          _count: { select: { resumes: true } },
-        },
-      })
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+      include: {
+        _count: { select: { resumes: true } },
+      },
+    })
     : []
 
   return (
@@ -43,8 +47,25 @@ export default async function DashboardPage() {
       {/* Greeting */}
       <section>
         <h1 className="text-2xl font-bold">
-          Welcome back, {session.user.name} 👋
+          Welcome back,{" "}
+          {user?.firstName || user?.lastName ? (
+            <>
+              {user.firstName
+                ? user.firstName.charAt(0).toUpperCase() +
+                user.firstName.slice(1).toLowerCase()
+                : ""}
+              {" "}
+              {user.lastName
+                ? user.lastName.charAt(0).toUpperCase() +
+                user.lastName.slice(1).toLowerCase()
+                : ""}
+            </>
+          ) : (
+            ""
+          )}
+          👋
         </h1>
+
         <p className="text-muted-foreground mt-1">
           Here are your most recent jobs. Keep building your team!
         </p>

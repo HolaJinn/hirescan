@@ -1,4 +1,3 @@
-// components/forms/update-profile-form.tsx
 'use client';
 
 import { useState } from "react";
@@ -16,9 +15,11 @@ type Props = {
 
 export function UpdateProfileForm({ firstName, lastName, email }: Props) {
   const [formData, setFormData] = useState({
-    firstName,
-    lastName,
+    firstName: firstName || "",
+    lastName: lastName || "",
   });
+
+  console.log("this is firstname: ", email)
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -30,10 +31,9 @@ export function UpdateProfileForm({ firstName, lastName, email }: Props) {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log("hello")
-
     e.preventDefault();
     setIsSubmitting(true);
+
     const res = await fetch("/api/profile/edit", {
       method: "PATCH",
       headers: {
@@ -46,7 +46,7 @@ export function UpdateProfileForm({ firstName, lastName, email }: Props) {
 
     if (res.ok) {
       toast.success("Profile updated successfully");
-      redirect("/dashboard/profile")
+      redirect("/dashboard/profile");
     } else {
       toast.error("Failed to update profile");
     }
@@ -67,7 +67,6 @@ export function UpdateProfileForm({ firstName, lastName, email }: Props) {
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
-            placeholder="John"
             className="mt-1"
           />
         </div>
@@ -81,7 +80,6 @@ export function UpdateProfileForm({ firstName, lastName, email }: Props) {
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
-            placeholder="Doe"
             className="mt-1"
           />
         </div>

@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/app/utils/prisma';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -21,7 +20,7 @@ type Job = {
 
 export default async function RecruiterProfilePage() {
   const session = await requireUser();
-  if (!session?.user) return redirect('/api/auth/login');
+  if (!session?.user) return redirect('/login');
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
@@ -76,7 +75,23 @@ export default async function RecruiterProfilePage() {
             lastName={user.lastName}
           />
           <div>
-            <h1 className="text-2xl font-bold">{user.firstName} {user.lastName}</h1>
+            <h1 className="text-2xl font-bold">
+              {user?.firstName || user?.lastName ? (
+                <>
+                  {user.firstName
+                    ? user.firstName.charAt(0).toUpperCase() +
+                    user.firstName.slice(1).toLowerCase()
+                    : ""}
+                  {" "}
+                  {user.lastName
+                    ? user.lastName.charAt(0).toUpperCase() +
+                    user.lastName.slice(1).toLowerCase()
+                    : ""}
+                </>
+              ) : (
+                ""
+              )}
+            </h1>
             <p className="text-sm text-muted-foreground">{user.email}</p>
           </div>
         </div>

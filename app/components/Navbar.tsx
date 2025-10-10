@@ -13,19 +13,29 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface NavbarProps {
     session: Session | null;
 }
 
-function getInitials(name: string) {
-    if (!name) return '';
-    const parts = name.trim().split(' ');
-    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-    return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
-}
-
 export default function Navbar({ session }: NavbarProps) {
+
+    const [user, setUser] = useState<{ firstName?: string; lastName?: string; image?: string } | null>(null);
+
+    useEffect(() => {
+        fetch('/api/user/me')
+            .then(res => res.json())
+            .then(data => setUser(data))
+            .catch(console.error);
+    }, []);
+
+    function getInitials() {
+        if (!user) return '';
+        const parts = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim().split(' ');
+        if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+        return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+    }
     return (
         <nav className="flex items-center justify-between px-6 py-4 bg-purple-100 border-b border-purple-200 shadow-sm">
             <div className="flex items-center gap-4">
@@ -85,11 +95,11 @@ export default function Navbar({ session }: NavbarProps) {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Avatar className="h-9 w-9 cursor-pointer bg-purple-600">
-                            {session.user.image ? (
-                                <AvatarImage src={session.user.image} alt="User avatar" className="h-full w-full object-cover"/>
+                            {user?.image ? (
+                                <AvatarImage src={user.image} alt="User avatar" className="h-full w-full object-cover" />
                             ) : (
                                 <AvatarFallback className="text-white font-semibold bg-purple-700">
-                                    {getInitials(session.user.name || '')}
+                                    {getInitials()}
                                 </AvatarFallback>
                             )}
                         </Avatar>
