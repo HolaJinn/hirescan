@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Upload } from 'lucide-react'
 
 export default function ApplicationForm({ jobId }: { jobId: string }) {
@@ -10,10 +9,17 @@ export default function ApplicationForm({ jobId }: { jobId: string }) {
   const [file, setFile] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('') // <-- new
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!file) return alert('Please upload a resume')
+
+    if (!file) {
+      setError('Please upload a resume') // show alert
+      return
+    }
+
+    setError('') // clear previous errors
 
     const formData = new FormData()
     formData.append('fullName', fullName)
@@ -32,7 +38,7 @@ export default function ApplicationForm({ jobId }: { jobId: string }) {
     if (res.ok) {
       setSubmitted(true)
     } else {
-      alert('Submission failed.')
+      setError('Submission failed. Please try again.')
     }
   }
 
@@ -47,6 +53,12 @@ export default function ApplicationForm({ jobId }: { jobId: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {error && (
+        <div className="p-3 text-red-700 bg-red-100 rounded-md text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Full Name */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
@@ -82,7 +94,6 @@ export default function ApplicationForm({ jobId }: { jobId: string }) {
               type="file"
               accept="application/pdf"
               onChange={(e) => setFile(e.target.files?.[0] || null)}
-              required
               className="hidden"
             />
           </label>

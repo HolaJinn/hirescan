@@ -88,17 +88,21 @@ export async function POST(
       },
     });
 
-    // ✅ Publish to QStash
-    const result = await qstash.publishJSON({
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/api/process-resume`,
-      body: { resumeId: resume.id },
-    });
+    // ✅ Publish to QStash only in production
+    let qstashMessageId: string | null = null;
+    if (isProd) {
+      const result = await qstash.publishJSON({
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/api/process-resume`,
+        body: { resumeId: resume.id },
+      });
+      qstashMessageId = result.messageId;
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Resume uploaded and queued for processing",
+      message: "Resume uploaded" + (isProd ? " and queued for processing" : ""),
       resumeId: resume.id,
-      qstashMessageId: result.messageId,
+      qstashMessageId,
     });
   } catch (err) {
     console.error("Unexpected error:", err);
