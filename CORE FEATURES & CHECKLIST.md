@@ -4,6 +4,7 @@ SHOULD DO FOR THE PREVIOUS STEP:
 
 Make sure to prevent the actions of the recruiter that are not allowed on a server side (e.g : add recuiter, I removed the button for the recuiter but he can still access the endpoint, still he should be unauthorized to do it)
 
+Use AI to create psychotech quizzs that's based on the values, culture and the field of the entreprise
 
 2. Stripe payment
 
